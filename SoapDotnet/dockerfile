@@ -7,9 +7,16 @@ RUN apt-get update && apt-get install -y
 # Set working directory
 WORKDIR /app
 
+# Copy the project files and the solution file (if applicable)
+COPY *.csproj ./
+COPY *.sln ./
+
 # Copy Code
-COPY . /app
-CMD ["dotnet", "add", "package", "SoapCore"]
+RUN dotnet restore
+COPY . ./
+
+# Build the application
+RUN dotnet build -c Release -o out
 
 # # Expose port 5109 and start dotnet
 EXPOSE 5109
