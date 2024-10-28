@@ -1,0 +1,18 @@
+
+Minstens 6x Programmeertaal + API framework
+
+In de les:
+    SOAP -> C#
+    GraphQL -> Python
+    gRPC -> Java
+    Rest ->
+    WebSockets ->
+    MQTT ->
+
+Zelf:
+    Soap -> C#
+    GraphQL -> Go? (gqlgen -> https://gqlgen.com/)
+    gRPC -> Cpp
+    REST ->
+    WebSockets ->
+    MQTT ->

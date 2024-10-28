@@ -1,0 +1,6 @@
+@SoapDotnet_HostAddress = http://localhost:5109
+
+GET {{SoapDotnet_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

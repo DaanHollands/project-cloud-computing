@@ -1,0 +1,50 @@
+version: "3.8"
+
+services:
+  laravel:
+    container_name: laravel
+    build: 
+      context: ./CloudComputing
+      dockerfile: ./dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./CloudComputing/:/app:Z
+
+  dotnet:
+    container_name: soap_dotnet
+    build:
+      context: ./SoapDotnet
+      dockerfile: ./dockerfile
+    ports:
+      - "8001:5109"
+    volumes:
+      - ./SoapDotnet:/app:Z
+
+  postgres:
+      container_name: postgresql
+      image: postgres:latest
+      environment:
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: postgres
+        POSTGRES_DB: user_profile_database
+      ports:
+        - "5432:5432"
+
+  db:
+    container_name: mariadb
+    image: mariadb
+    restart: always
+    ports:
+        - "3306:3306"
+    environment:
+      MARIADB_ROOT_PASSWORD: example
+      MARIADB_USER: soap
+      MARIADB_PASSWORD: test
+
+  adminer:
+    container_name: adminer
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080

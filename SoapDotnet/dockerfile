@@ -1,0 +1,16 @@
+# docker/laravel-Dockerfile
+FROM docker.io/bitnami/dotnet-sdk:latest
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y
+
+# Set working directory
+WORKDIR /app
+
+# Copy Code
+COPY . /app
+CMD ["dotnet", "add", "package", "SoapCore"]
+
+# # Expose port 5109 and start dotnet
+EXPOSE 5109
+CMD ["dotnet", "run", "--urls=http://0.0.0.0:5109"]
