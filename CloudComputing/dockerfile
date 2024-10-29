@@ -1,12 +1,29 @@
-# docker/laravel-Dockerfile
-FROM docker.io/php:8.3-cli
+FROM docker.io/php:8.3-fpm
 
-# Install system dependencies
+# Install system dependencies and build tools
 RUN apt-get update && apt-get install -y \
     git \
     zip \
     unzip \
-    curl
+    curl \
+    libcurl4-openssl-dev \
+    libxml2-dev \
+    libonig-dev \
+    libssl-dev \
+    zlib1g-dev \
+    libtool \
+    autoconf \
+    automake \
+    && docker-php-ext-install soap xml curl
+
+RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+
+RUN pear config-set php_ini $PHP_INI_DIR/php.ini
+
+# Install PECL extensions
+RUN pecl install raphf \
+    && pecl install pecl_http \
+    && docker-php-ext-enable raphf http
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -18,6 +35,6 @@ WORKDIR /app
 COPY . /app
 RUN composer install --no-interaction --optimize-autoloader
 
-# # Expose port 8000 and start Laravel
+# Expose port 8000 and start Laravel
 EXPOSE 8000
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
