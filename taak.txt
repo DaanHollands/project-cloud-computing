@@ -1,18 +1,30 @@
+Opdracht van de taak:
 
-Minstens 6x Programmeertaal + API framework
+Website voor een ziekenhuis
+    ==> inloggen
+    	==> profiel met gegevens
+    	==> afgenomen foto's
+    	==> facturen
 
-In de les:
-    SOAP -> C#
-    GraphQL -> Python
-    gRPC -> Java
-    Rest ->
-    WebSockets ->
-    MQTT ->
+    ==> vaccinaties service zelf maken
+    	
+    	
+    ==> Tafels reserveren in de cafetaria of op het terras (a.d.h.v. het weer)
+    	==> externe weerapp (service)
+        ==> aan de hand van een webserver
+        ==> bestelling doorgeven
+        
+    ==> agenda
+    	==> Jaarlijkse afspraken bij de dokter    
+        ==> Afspraken maken
 
-Zelf:
-    Soap -> C#
-    GraphQL -> Go? (gqlgen -> https://gqlgen.com/)
-    gRPC -> Cpp
-    REST ->
-    WebSockets ->
-    MQTT ->
+    ==> Bot voor nieuwe afspraken te recomanderen aan de hand van de tijd 
+    	==> input welke problemen ==> dokter aanraden
+    
+    ==> agenda delen met andere mensen
+    ==> afsrpaken met andere mensen met dezelfde aandoeningen
+    	==> afspreken aan de hand van zelfde soort operaties
+
+    ==> agenda linken aan Google Agenda (ics)
+    
+    

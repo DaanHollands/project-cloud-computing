@@ -1,11 +1,13 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SoapDotnet.Models
 {
     public class User
     {
         [Key]
-        public required string Id{get; set;}
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public required int Id{get; set;}
 
         [Required]
         [MaxLength(100)]
@@ -25,5 +27,6 @@ namespace SoapDotnet.Models
 
         [MaxLength(100)]
         public string? remember_token;
+
     }
 }

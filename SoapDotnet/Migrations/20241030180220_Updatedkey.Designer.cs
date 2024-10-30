@@ -11,8 +11,8 @@ using SoapDotnet.Models;
 namespace SoapDotnet.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241029174718_CreateMigration")]
-    partial class CreateMigration
+    [Migration("20241030180220_Updatedkey")]
+    partial class Updatedkey
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -42,9 +42,8 @@ namespace SoapDotnet.Migrations
                     b.Property<string>("UserAgent")
                         .HasColumnType("text");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -55,8 +54,11 @@ namespace SoapDotnet.Migrations
 
             modelBuilder.Entity("SoapDotnet.Models.User", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Email")
                         .IsRequired()

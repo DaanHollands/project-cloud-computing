@@ -8,7 +8,7 @@ namespace SoapDotnet.Models
         [Key]
         public required string Id {get; set;}
 
-        public required string UserId {get; set;}
+        public required int UserId {get; set;}
 
         [ForeignKey("UserId")]
         public User? User {get; set;}

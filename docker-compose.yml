@@ -7,9 +7,14 @@ services:
       context: ./CloudComputing
       dockerfile: ./dockerfile
     ports:
-      - "8000:8000"
+      - "8000:8000" # php artisan serve
+      - "5173:5173" # npm run dev
     volumes:
-      - ./CloudComputing/:/app:Z
+      - ./CloudComputing/:/app:Z # For Development
+    networks:
+      - app-network
+    depends_on:
+      - dotnet
 
   dotnet:
     container_name: soap_dotnet
@@ -19,7 +24,11 @@ services:
     ports:
       - "8001:5109"
     volumes:
-      - ./SoapDotnet:/app:Z
+      - ./SoapDotnet:/app:Z # For Development
+    networks:
+      - app-network
+    depends_on:
+      - postgres
 
   postgres:
       container_name: postgresql
@@ -31,18 +40,9 @@ services:
       ports:
         - "5432:5432"
       volumes:
-        - postgres_data:/var/lib/postgresql/data
-  #
-  # db:
-  #   container_name: mariadb
-  #   image: mariadb
-  #   restart: always
-  #   ports:
-  #       - "3306:3306"
-  #   environment:
-  #     MARIADB_ROOT_PASSWORD: example
-  #     MARIADB_USER: soap
-  #     MARIADB_PASSWORD: test
+        - postgres_data:/var/lib/postgresql/data # Persistent Data Storage
+      networks:
+      - app-network
 
   adminer:
     container_name: adminer
@@ -50,6 +50,12 @@ services:
     restart: always
     ports:
       - 8080:8080
+    networks:
+      - app-network
 
 volumes:
     postgres_data:
+
+networks:
+    app-network:
+      driver: bridge
