@@ -1,3 +1,4 @@
+using System.Runtime.Versioning;
 using System.ServiceModel;
 
 namespace SoapDotnet.Models
@@ -22,6 +23,18 @@ namespace SoapDotnet.Models
 
         [OperationContract]
         int Register(string email, string password, string name);
+
+        [OperationContract]
+        string GetSession(int SessionId);
+
+        [OperationContract]
+        bool WriteSession(int SessionId, string Data);
+
+        [OperationContract]
+        void DestroySession(int SessionId);
+
+        [OperationContract]
+        void DestroySessionsSince(int Time);
     }
     
 }

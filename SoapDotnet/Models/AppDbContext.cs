@@ -1,3 +1,4 @@
+using System.Reflection.Metadata;
 using Microsoft.EntityFrameworkCore;
 
 namespace SoapDotnet.Models
@@ -6,9 +7,14 @@ namespace SoapDotnet.Models
     {
         public virtual DbSet<User> Users { get; set; }
 
+        public virtual DbSet<Session> Sessions {get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>(entity => {
+                entity.HasKey(k => k.Id);
+            });
+            modelBuilder.Entity<Session>(entity => {
                 entity.HasKey(k => k.Id);
             });
             OnModelCreatingPartial(modelBuilder);

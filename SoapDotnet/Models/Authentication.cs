@@ -1,3 +1,5 @@
+using System.Runtime.InteropServices;
+
 namespace SoapDotnet.Models
 {
     public class Authentication : IAuthentication
@@ -44,14 +46,12 @@ namespace SoapDotnet.Models
 
         public string GetPasswordHash(int Id)
         {
-            Console.WriteLine($"Fetch Id; {Id}");
             var user = _context.Users.FirstOrDefault(u => u.Id == Id);
             return user?.Password ?? string.Empty;
         }
 
         public int Register(string email, string password, string name)
         {
-            Console.WriteLine("Email: {0}, Password: {1}, Name: {2}", email, password, name);
             User user = new()
             {
                 Id = 0, // Assuming Id is auto-generated and will be replaced by the database
@@ -75,6 +75,53 @@ namespace SoapDotnet.Models
                 return new UserInfo(-1, string.Empty, string.Empty, string.Empty);
             }
             return new UserInfo(user.Id, user.Email, user.FirstName + " " + user.LastName, user.remember_token ?? string.Empty);
+        }
+
+        public string GetSession(int SessionId)
+        {
+            var session = _context.Sessions.FirstOrDefault(s => s.SessionId == SessionId);
+            if(session == null)
+            {
+                return string.Empty;
+            }
+            return session.Data;
+        }
+
+        public bool WriteSession(int SessionId, string Data)
+        {
+            Session session = new Session
+            {
+                SessionId = SessionId,
+                Data = Data,
+                UnixTineStamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
+            };
+            var result = _context.Sessions.Add(session);
+            _context.SaveChanges();
+
+            return result != null;
+        }
+
+        public void DestroySession(int SessionId)
+        {
+            var session = _context.Sessions.FirstOrDefault(s => s.SessionId == SessionId);
+
+            if(session == null)
+            {
+                return;
+            }
+            _context.Sessions.Remove(session);
+            _context.SaveChanges();
+        }
+
+        public void DestroySessionsSince(int Time)
+        {
+            var sessions = _context.Sessions.Where(s => s.UnixTineStamp <= Time).ToList();
+
+            for(var session in sessions)
+            {
+                _context.Sessions.Remove(session);
+            }
+            _context.SaveChanges();
         }
     }
 }
