@@ -7,7 +7,7 @@ namespace SoapDotnet.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public required int SessionId{get; set;}
+        public required string SessionId{get; set;}
 
         [Required]
         public required string Data{get; set;}

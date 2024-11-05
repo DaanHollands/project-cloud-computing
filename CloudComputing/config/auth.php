@@ -40,10 +40,10 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
-        'api' => [
-            'driver' => 'token',
-            'provider' => 'soap_users',
-        ]
+//        'api' => [
+//            'driver' => 'token',
+//            'provider' => 'soap_users',
+//        ]
     ],
 
     /*
@@ -66,7 +66,7 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'soap_api',
-            'model' => \App\SOAP\SoapUser::class,
+            'model' => \App\Models\User::class,
         ],
 
         // 'users' => [

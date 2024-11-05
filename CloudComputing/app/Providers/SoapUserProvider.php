@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\SOAP\SoapUser;
+use App\Models\User;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Support\Facades\Hash;
@@ -16,7 +16,7 @@ class SoapUserProvider implements UserProvider
 
     public function __construct()
     {
-        $this->soapClient = new SoapClient('http://soap_dotnet:5109/auth?wsdl');
+        $this->soapClient = new SoapClient(env('SOAP_API_WSDL'));
     }
 
     public function retrieveById($identifier) : ?Authenticatable
@@ -54,7 +54,11 @@ class SoapUserProvider implements UserProvider
 
     public function retrieveByCredentials(#[SensitiveParameter] array $credentials): ?Authenticatable
     {
-        $response = $this->soapClient->__soapCall('GetUserByEmail', [$credentials]);
+        try {
+            $response = $this->soapClient->__soapCall('GetUserByEmail', [$credentials]);
+        } catch (\SoapFault $e) {
+            return null;
+        }
         $userData = [
             'userId' => $response->GetUserByEmailResult->UserId,
             'email' => $response->GetUserByEmailResult->Email,
@@ -98,7 +102,7 @@ class SoapUserProvider implements UserProvider
 
     protected function userDataToUser(array $userData) : Authenticatable
     {
-        return new SoapUser($userData['userId'], $userData['email'], $userData['fullName']);
+        return new User($userData['userId'], $userData['email'], $userData['fullName']);
     }
 
     protected function isTokenValid(array $userData, string $token): bool

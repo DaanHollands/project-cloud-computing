@@ -77,7 +77,7 @@ namespace SoapDotnet.Models
             return new UserInfo(user.Id, user.Email, user.FirstName + " " + user.LastName, user.remember_token ?? string.Empty);
         }
 
-        public string GetSession(int SessionId)
+        public string GetSession(string SessionId)
         {
             var session = _context.Sessions.FirstOrDefault(s => s.SessionId == SessionId);
             if(session == null)
@@ -87,7 +87,7 @@ namespace SoapDotnet.Models
             return session.Data;
         }
 
-        public bool WriteSession(int SessionId, string Data)
+        public bool WriteSession(string SessionId, string Data)
         {
             Session session = new Session
             {
@@ -101,7 +101,7 @@ namespace SoapDotnet.Models
             return result != null;
         }
 
-        public void DestroySession(int SessionId)
+        public void DestroySession(string SessionId)
         {
             var session = _context.Sessions.FirstOrDefault(s => s.SessionId == SessionId);
 
@@ -117,7 +117,7 @@ namespace SoapDotnet.Models
         {
             var sessions = _context.Sessions.Where(s => s.UnixTineStamp <= Time).ToList();
 
-            for(var session in sessions)
+            foreach(var session in sessions)
             {
                 _context.Sessions.Remove(session);
             }

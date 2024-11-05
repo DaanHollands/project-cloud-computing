@@ -15,7 +15,7 @@ namespace SoapDotnet.Models
                 entity.HasKey(k => k.Id);
             });
             modelBuilder.Entity<Session>(entity => {
-                entity.HasKey(k => k.Id);
+                entity.HasKey(k => k.SessionId);
             });
             OnModelCreatingPartial(modelBuilder);
         }

@@ -25,13 +25,13 @@ namespace SoapDotnet.Models
         int Register(string email, string password, string name);
 
         [OperationContract]
-        string GetSession(int SessionId);
+        string GetSession(string SessionId);
 
         [OperationContract]
-        bool WriteSession(int SessionId, string Data);
+        bool WriteSession(string SessionId, string Data);
 
         [OperationContract]
-        void DestroySession(int SessionId);
+        void DestroySession(string SessionId);
 
         [OperationContract]
         void DestroySessionsSince(int Time);
