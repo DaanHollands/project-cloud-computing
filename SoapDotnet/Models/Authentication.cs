@@ -1,6 +1,3 @@
-
-using Microsoft.EntityFrameworkCore;
-
 namespace SoapDotnet.Models
 {
     public class Authentication : IAuthentication
@@ -49,14 +46,6 @@ namespace SoapDotnet.Models
         {
             Console.WriteLine($"Fetch Id; {Id}");
             var user = _context.Users.FirstOrDefault(u => u.Id == Id);
-            if (user != null)
-            {
-                Console.WriteLine($"User ID: {user.Id}, Email: {user.Email}, Full Name: {user.FirstName} {user.LastName}");
-            }
-            else
-            {
-                Console.WriteLine("User not found.");
-            }
             return user?.Password ?? string.Empty;
         }
 

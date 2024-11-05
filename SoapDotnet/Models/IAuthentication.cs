@@ -1,4 +1,3 @@
-using System.Runtime.Versioning;
 using System.ServiceModel;
 
 namespace SoapDotnet.Models
