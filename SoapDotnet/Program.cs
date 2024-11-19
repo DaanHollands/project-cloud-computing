@@ -16,7 +16,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         npgsqlOptions.EnableRetryOnFailure()));
 
 builder.Services.AddSoapCore();
-builder.Services.AddScoped<IAuthentication, Authentication>();            
+builder.Services.AddScoped<IUserService, UserService>();            
 
 var app = builder.Build();
 
@@ -29,6 +29,6 @@ if (app.Environment.IsDevelopment())
 
 // app.UseHttpsRedirection();
 
-app.UseSoapEndpoint<IAuthentication>("/auth", new SoapEncoderOptions());
+app.UseSoapEndpoint<IUserService>("/user", new SoapEncoderOptions());
 
 app.Run();

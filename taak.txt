@@ -2,7 +2,7 @@ Opdracht van de taak:
 
 Website voor een ziekenhuis
     ==> inloggen
-    	==> profiel met gegevens
+    	==> profiel met gegevens (Soap)
     	==> afgenomen foto's
     	==> facturen
 

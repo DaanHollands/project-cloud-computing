@@ -4,13 +4,13 @@ services:
   laravel:
     container_name: laravel
     build: 
-      context: ./CloudComputing
+      context: ./laravelWebsite
       dockerfile: ./dockerfile
     ports:
       - "8000:8000" # php artisan serve
       - "5173:5173" # npm run dev
     volumes:
-      - ./CloudComputing/:/app:Z # For Development
+      - ./laravelWebsite/:/app:Z # For Development
     networks:
       - app-network
     depends_on:
