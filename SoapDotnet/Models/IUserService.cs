@@ -7,7 +7,7 @@ namespace SoapDotnet.Models
     public interface IUserService
     {
         [OperationContract]
-        public bool CreateUser(string Email, string FullName, string BirthDay, string PostalCode, string Street, int HouseNumber, string Country);
+        public bool CreateUser(string Email, string FullName, string BirthDate, string PostalCode, string Street, int HouseNumber, string Country);
 
         [OperationContract]
         public bool UpdateAddress(string Email, string PostalCode, string Street, int HouseNumber, string Country);

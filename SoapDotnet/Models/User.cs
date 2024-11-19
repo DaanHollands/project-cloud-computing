@@ -25,7 +25,7 @@ namespace SoapDotnet.Models
 
         [Required]
         [DataMember]
-        public required string BirthDay{ get; set; }
+        public required string BirthDate{ get; set; }
 
         [DataMember]
         public Address? Address{ get; set; }

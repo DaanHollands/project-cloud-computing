@@ -29,7 +29,7 @@ namespace SoapDotnet.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("BirthDay")
+                    b.Property<string>("BirthDate")
                         .IsRequired()
                         .HasColumnType("text");
 

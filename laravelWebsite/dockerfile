@@ -21,13 +21,6 @@ RUN apt-get update && apt-get install -y \
 
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
-RUN pear config-set php_ini $PHP_INI_DIR/php.ini
-
-# Install PECL extensions
-RUN pecl install raphf \
-    && pecl install pecl_http \
-    && docker-php-ext-enable raphf http
-
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 

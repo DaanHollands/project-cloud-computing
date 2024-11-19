@@ -11,7 +11,7 @@ using SoapDotnet.Models;
 namespace SoapDotnet.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241119130129_database")]
+    [Migration("20241119163539_database")]
     partial class database
     {
         /// <inheritdoc />
@@ -32,7 +32,7 @@ namespace SoapDotnet.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("BirthDay")
+                    b.Property<string>("BirthDate")
                         .IsRequired()
                         .HasColumnType("text");
 

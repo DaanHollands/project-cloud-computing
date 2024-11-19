@@ -20,7 +20,7 @@ namespace SoapDotnet.Migrations
                     Email = table.Column<string>(type: "text", nullable: false),
                     FirstName = table.Column<string>(type: "text", nullable: false),
                     LastName = table.Column<string>(type: "text", nullable: false),
-                    BirthDay = table.Column<string>(type: "text", nullable: false),
+                    BirthDate = table.Column<string>(type: "text", nullable: false),
                     Address_PostalCode = table.Column<string>(type: "text", nullable: true),
                     Address_Street = table.Column<string>(type: "text", nullable: true),
                     Address_HouseNumber = table.Column<int>(type: "integer", nullable: true),

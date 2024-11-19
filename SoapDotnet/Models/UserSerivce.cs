@@ -1,5 +1,6 @@
 using System.Data.SqlTypes;
 using System.Runtime.InteropServices;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.EntityFrameworkCore;
 
 namespace SoapDotnet.Models
@@ -14,17 +15,22 @@ namespace SoapDotnet.Models
             _context = context;
         }
 
-        public bool CreateUser(string Email, string FullName, string BirthDay, string PostalCode, string Street, int HouseNumber, string Country)
+        public bool CreateUser(string Email, string FullName, string BirthDate, string PostalCode, string Street, int HouseNumber, string Country)
         {
+            if (_context.Users.Any(u => u.Email == Email))
+            {
+                return false;
+            }
+
             Address address = new(PostalCode, Street, HouseNumber, Country);
-            
+            string[] names = FullName.Split(' ');
             User user = new()
             {
                 Id = 0,
                 Email = Email,
-                FirstName = FullName,
-                LastName = FullName,
-                BirthDay = BirthDay,
+                FirstName = names[0],
+                LastName = string.Join(" ", names.Skip(1)),
+                BirthDate = BirthDate,
                 Address = address
             };
 
