@@ -6,6 +6,7 @@ services:
     build: 
       context: ./laravelWebsite
       dockerfile: ./dockerfile
+    image: localhost/laravel:latest
     ports:
       - "8000:8000" # php artisan serve
       - "5173:5173" # npm run dev
@@ -21,6 +22,7 @@ services:
     build:
       context: ./SoapDotnet
       dockerfile: ./dockerfile
+    image: localhost/dotnet:latest
     ports:
       - "8001:5109"
     volumes:
@@ -31,12 +33,15 @@ services:
       - postgres
 
   postgres:
-      container_name: postgresql
-      image: postgres:latest
+      container_name: postgres
+      build:
+        context: ./postgresDatabase
+        dockerfile: ./dockerfile
+      image: localhost/postgres:latest
       environment:
         POSTGRES_USER: postgres
         POSTGRES_PASSWORD: postgres
-        POSTGRES_DB: user_profile_database
+        POSTGRES_MULTIPLE_DB: user_profile_database,laravel_user_database
       ports:
         - "5432:5432"
       volumes:

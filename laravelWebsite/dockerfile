@@ -16,7 +16,8 @@ RUN apt-get update && apt-get install -y \
     automake \
     nodejs \
     npm \
-    && docker-php-ext-install soap xml curl
+    libpq-dev \
+    && docker-php-ext-install pgsql pdo_pgsql soap xml curl
 
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 

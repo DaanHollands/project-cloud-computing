@@ -9,12 +9,8 @@ namespace SoapDotnet.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>(entity => {
-                entity.HasKey(k => k.Id);
-            });
-            OnModelCreatingPartial(modelBuilder);
+            modelBuilder.Entity<User>()
+                            .OwnsOne(u => u.Address);
         }
-
-        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 }

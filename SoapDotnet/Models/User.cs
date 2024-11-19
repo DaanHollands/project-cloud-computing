@@ -28,7 +28,7 @@ namespace SoapDotnet.Models
         public required string BirthDay{ get; set; }
 
         [DataMember]
-        public required Address Address{ get; set; }
+        public Address? Address{ get; set; }
 
         [DataMember]
         public string? PhoneNumber{ get; set; }
