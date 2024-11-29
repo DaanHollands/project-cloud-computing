@@ -6,7 +6,7 @@ services:
     build: 
       context: ./laravelWebsite
       dockerfile: ./dockerfile
-    image: localhost/laravelWebsite:latest
+    image: localhost/laravelwebsite:latest
     ports:
       - "8000:8000" # php artisan serve
       - "5173:5173" # npm run dev
