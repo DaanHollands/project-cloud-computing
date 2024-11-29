@@ -10,14 +10,34 @@ import (
 	"fmt"
 )
 
-// CreateTodo is the resolver for the createTodo field.
-func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
-	panic(fmt.Errorf("not implemented: CreateTodo - createTodo"))
+// CreateAgendaEvent is the resolver for the createAgendaEvent field.
+func (r *mutationResolver) CreateAgendaEvent(ctx context.Context, userID string, title string, description *string, year int, month int, day int, hour int, minute int) (*model.AgendaEvent, error) {
+	panic(fmt.Errorf("not implemented: CreateAgendaEvent - createAgendaEvent"))
 }
 
-// Todos is the resolver for the todos field.
-func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
-	panic(fmt.Errorf("not implemented: Todos - todos"))
+// UpdateAgendaEvent is the resolver for the updateAgendaEvent field.
+func (r *mutationResolver) UpdateAgendaEvent(ctx context.Context, id string, title *string, description *string, year *int, month *int, day *int, hour *int, minute *int) (*model.AgendaEvent, error) {
+	panic(fmt.Errorf("not implemented: UpdateAgendaEvent - updateAgendaEvent"))
+}
+
+// DeleteAgendaEvent is the resolver for the deleteAgendaEvent field.
+func (r *mutationResolver) DeleteAgendaEvent(ctx context.Context, id string) (bool, error) {
+	panic(fmt.Errorf("not implemented: DeleteAgendaEvent - deleteAgendaEvent"))
+}
+
+// GetAgenda is the resolver for the getAgenda field.
+func (r *queryResolver) GetAgenda(ctx context.Context, id string) (*model.AgendaEvent, error) {
+	panic(fmt.Errorf("not implemented: GetAgenda - getAgenda"))
+}
+
+// ListAgendas is the resolver for the listAgendas field.
+func (r *queryResolver) ListAgendas(ctx context.Context, userID string) ([]*model.AgendaEvent, error) {
+	panic(fmt.Errorf("not implemented: ListAgendas - listAgendas"))
+}
+
+// GetAgendasByDateTime is the resolver for the getAgendasByDateTime field.
+func (r *queryResolver) GetAgendasByDateTime(ctx context.Context, userID string, year int, month int, day int, hout *int, minute *int) ([]*model.AgendaEvent, error) {
+	panic(fmt.Errorf("not implemented: GetAgendasByDateTime - getAgendasByDateTime"))
 }
 
 // Mutation returns MutationResolver implementation.

@@ -1,28 +1,43 @@
-# GraphQL schema example
-#
-# https://gqlgen.com/getting-started/
-
-type Todo {
+type AgendaEvent {
   id: ID!
-  text: String!
-  done: Boolean!
-  user: User!
-}
-
-type User {
-  id: ID!
-  name: String!
+  userId: ID!
+  title: String!
+  description: String
+  year: Int!
+  month: Int!
+  day: Int!
+  hour: Int
+  minute: Int
 }
 
 type Query {
-  todos: [Todo!]!
-}
-
-input NewTodo {
-  text: String!
-  userId: String!
+  getAgenda(id: ID!): AgendaEvent
+  listAgendas(userId: ID!): [AgendaEvent!]!
+  getAgendasByDateTime(userId: ID!, year: Int!, month: Int!, day: Int!, hout: Int, minute: Int): [AgendaEvent!]!
 }
 
 type Mutation {
-  createTodo(input: NewTodo!): Todo!
+  createAgendaEvent(
+    userId: ID!
+    title: String!
+    description: String
+    year: Int!
+    month: Int!
+    day: Int!
+    hour: Int
+    minute: Int
+  ): AgendaEvent!
+
+  updateAgendaEvent(
+    id: ID!
+    title: String
+    description: String
+    year: Int
+    month: Int
+    day: Int
+    hour: Int
+    minute: Int
+  ): AgendaEvent!
+
+  deleteAgendaEvent(id: ID!): Boolean!
 }

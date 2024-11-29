@@ -1,5 +1,5 @@
 # docker/laravel-Dockerfile
-FROM docker.io/bitnami/dotnet-sdk:latest
+FROM docker.io/bitnami/dotnet-sdk:8
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y

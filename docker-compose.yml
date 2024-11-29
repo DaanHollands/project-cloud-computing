@@ -16,6 +16,7 @@ services:
       - app-network
     depends_on:
       - dotnet
+      - graphql
 
   dotnet:
     container_name: soap_dotnet
@@ -32,6 +33,21 @@ services:
     depends_on:
       - postgres
 
+  graphql:
+    container_name: graphql_go
+    build:
+      context: ./GraphqlAgenda
+      dockerfile: ./dockerfile
+    image: localhost/graphqlGo:image
+    ports:
+      - "8002:8060"
+    volumes:
+      - ./GraphqlAgenda:/app:Z # For Development
+    networks:
+      - app-network
+    depends_on:
+      - postgres
+
   postgres:
       container_name: postgres
       build:
@@ -41,7 +57,7 @@ services:
       environment:
         POSTGRES_USER: postgres
         POSTGRES_PASSWORD: postgres
-        POSTGRES_MULTIPLE_DB: user_profile_database,laravel_user_database
+        POSTGRES_MULTIPLE_DB: user_profile_database,laravel_user_database,graphql_agenda_database
       ports:
         - "5432:5432"
       volumes:
@@ -54,7 +70,7 @@ services:
     image: adminer
     restart: always
     ports:
-      - 8080:8080
+      - "8080:8080"
     networks:
       - app-network
 
