@@ -14,7 +14,7 @@ Website voor een ziekenhuis
         ==> aan de hand van een webserver
         ==> bestelling doorgeven
         
-    ==> agenda
+    ==> agenda (GraphQL)
     	==> Jaarlijkse afspraken bij de dokter    
         ==> Afspraken maken
 

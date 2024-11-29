@@ -1,0 +1,37 @@
+# Use an official Ubuntu as a parent image
+FROM ubuntu:20.04
+
+# Set environment variables to non-interactive
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    cmake \
+    g++ \
+    make \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create a working directory
+WORKDIR /app
+
+# Copy the current directory contents into the container at /app
+COPY . /app
+
+# Create a build directory
+RUN mkdir -p build
+
+# Set the working directory to the build directory
+WORKDIR /app/build
+
+# Run CMake to configure the project
+RUN cmake ..
+
+# Build the project
+RUN make
+
+# Set the working directory to the app directory
+WORKDIR /app
+
+# Command to run the executable
+CMD ["./build/MqttSensors"]

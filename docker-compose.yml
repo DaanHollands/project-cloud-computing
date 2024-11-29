@@ -17,6 +17,7 @@ services:
     depends_on:
       - dotnet
       - graphql
+      - mqttsensors
 
   dotnet:
     container_name: soap_dotnet
@@ -38,13 +39,36 @@ services:
     build:
       context: ./GraphqlAgenda
       dockerfile: ./dockerfile
-    image: localhost/graphqlgo:image
+    image: localhost/graphqlgo:latest
     ports:
       - "8002:8060"
     networks:
       - app-network
     depends_on:
       - postgres
+
+  mqttsensors:
+    container_name: mqtt_sensors
+    build:
+      context: ./MqttSensors
+      dockerfile: ./dockerfile
+    image: localhost/mqttsensors:latest
+    networks:
+      - app-network
+    depends_on:
+      - mqttbroker
+  
+  mqttbroker:
+    container_name: mqtt_broker
+    image: docker.io/eclipse-mosquitto:latest
+    volumes:
+      - "./MqttBroker/config/mosquitto.conf:/mosquitto/config/mosquitto.conf:Z"
+      - "./MqttBroker/data:/mosquitto/data:Z"
+      - "./MqttBroker/log:/mosquitto/log:Z"
+    ports:
+      - "8003:1883"
+    networks:
+      - app-network
 
   postgres:
       container_name: postgres
