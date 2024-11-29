@@ -5,17 +5,49 @@ package model
 type AgendaEvent struct {
 	ID          string  `json:"id"`
 	UserID      int     `json:"userId"`
+	DoctorID    int     `json:"doctorId"`
 	Title       string  `json:"title"`
 	Description *string `json:"description,omitempty"`
-	Year        int     `json:"year"`
-	Month       int     `json:"month"`
-	Day         int     `json:"day"`
-	Hour        *int    `json:"hour,omitempty"`
-	Minute      *int    `json:"minute,omitempty"`
+	Date        *Date   `json:"date"`
+	TimeBegin   *Time   `json:"timeBegin"`
+	TimeEnd     *Time   `json:"timeEnd"`
+}
+
+type Date struct {
+	Year  int `json:"year"`
+	Month int `json:"month"`
+	Day   int `json:"day"`
+}
+
+type DateInput struct {
+	Year  *int `json:"year,omitempty"`
+	Month *int `json:"month,omitempty"`
+	Day   *int `json:"day,omitempty"`
+}
+
+type DateInputRequired struct {
+	Year  int `json:"year"`
+	Month int `json:"month"`
+	Day   int `json:"day"`
 }
 
 type Mutation struct {
 }
 
 type Query struct {
+}
+
+type Time struct {
+	Hour   int `json:"hour"`
+	Minute int `json:"minute"`
+}
+
+type TimeInput struct {
+	Hour   *int `json:"hour,omitempty"`
+	Minute *int `json:"minute,omitempty"`
+}
+
+type TimeInputRequired struct {
+	Hour   int `json:"hour"`
+	Minute int `json:"minute"`
 }

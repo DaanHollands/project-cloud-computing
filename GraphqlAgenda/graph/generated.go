@@ -48,39 +48,49 @@ type DirectiveRoot struct {
 
 type ComplexityRoot struct {
 	AgendaEvent struct {
-		Day         func(childComplexity int) int
+		Date        func(childComplexity int) int
 		Description func(childComplexity int) int
-		Hour        func(childComplexity int) int
+		DoctorID    func(childComplexity int) int
 		ID          func(childComplexity int) int
-		Minute      func(childComplexity int) int
-		Month       func(childComplexity int) int
+		TimeBegin   func(childComplexity int) int
+		TimeEnd     func(childComplexity int) int
 		Title       func(childComplexity int) int
 		UserID      func(childComplexity int) int
-		Year        func(childComplexity int) int
+	}
+
+	Date struct {
+		Day   func(childComplexity int) int
+		Month func(childComplexity int) int
+		Year  func(childComplexity int) int
 	}
 
 	Mutation struct {
-		CreateAgendaEvent func(childComplexity int, userID int, title string, description *string, year int, month int, day int, hour *int, minute *int) int
+		CreateAgendaEvent func(childComplexity int, userID int, doctorID int, title string, description *string, date model.DateInputRequired, timeBegin model.TimeInputRequired, timeEnd model.TimeInputRequired) int
 		DeleteAgendaEvent func(childComplexity int, id string) int
-		UpdateAgendaEvent func(childComplexity int, id int, title *string, description *string, year *int, month *int, day *int, hour *int, minute *int) int
+		UpdateAgendaEvent func(childComplexity int, id int, title *string, description *string, date *model.DateInput, timeBegin *model.TimeInput, timeEnd *model.TimeInput) int
 	}
 
 	Query struct {
-		GetAgenda                func(childComplexity int, id string) int
-		GetAgendasByUserDateTime func(childComplexity int, userID int, year *int, month *int, day *int, hour *int, minute *int) int
-		ListAgendas              func(childComplexity int, userID int) int
+		GetAgenda       func(childComplexity int, id string) int
+		GetAgendaEvents func(childComplexity int, userID int, date *model.DateInput, time *model.TimeInput) int
+		ListAgendas     func(childComplexity int, userID int) int
+	}
+
+	Time struct {
+		Hour   func(childComplexity int) int
+		Minute func(childComplexity int) int
 	}
 }
 
 type MutationResolver interface {
-	CreateAgendaEvent(ctx context.Context, userID int, title string, description *string, year int, month int, day int, hour *int, minute *int) (*model.AgendaEvent, error)
-	UpdateAgendaEvent(ctx context.Context, id int, title *string, description *string, year *int, month *int, day *int, hour *int, minute *int) (*model.AgendaEvent, error)
+	CreateAgendaEvent(ctx context.Context, userID int, doctorID int, title string, description *string, date model.DateInputRequired, timeBegin model.TimeInputRequired, timeEnd model.TimeInputRequired) (*model.AgendaEvent, error)
+	UpdateAgendaEvent(ctx context.Context, id int, title *string, description *string, date *model.DateInput, timeBegin *model.TimeInput, timeEnd *model.TimeInput) (*model.AgendaEvent, error)
 	DeleteAgendaEvent(ctx context.Context, id string) (bool, error)
 }
 type QueryResolver interface {
 	GetAgenda(ctx context.Context, id string) (*model.AgendaEvent, error)
 	ListAgendas(ctx context.Context, userID int) ([]*model.AgendaEvent, error)
-	GetAgendasByUserDateTime(ctx context.Context, userID int, year *int, month *int, day *int, hour *int, minute *int) ([]*model.AgendaEvent, error)
+	GetAgendaEvents(ctx context.Context, userID int, date *model.DateInput, time *model.TimeInput) ([]*model.AgendaEvent, error)
 }
 
 type executableSchema struct {
@@ -102,12 +112,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 	_ = ec
 	switch typeName + "." + field {
 
-	case "AgendaEvent.day":
-		if e.complexity.AgendaEvent.Day == nil {
+	case "AgendaEvent.date":
+		if e.complexity.AgendaEvent.Date == nil {
 			break
 		}
 
-		return e.complexity.AgendaEvent.Day(childComplexity), true
+		return e.complexity.AgendaEvent.Date(childComplexity), true
 
 	case "AgendaEvent.description":
 		if e.complexity.AgendaEvent.Description == nil {
@@ -116,12 +126,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.AgendaEvent.Description(childComplexity), true
 
-	case "AgendaEvent.hour":
-		if e.complexity.AgendaEvent.Hour == nil {
+	case "AgendaEvent.doctorId":
+		if e.complexity.AgendaEvent.DoctorID == nil {
 			break
 		}
 
-		return e.complexity.AgendaEvent.Hour(childComplexity), true
+		return e.complexity.AgendaEvent.DoctorID(childComplexity), true
 
 	case "AgendaEvent.id":
 		if e.complexity.AgendaEvent.ID == nil {
@@ -130,19 +140,19 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.AgendaEvent.ID(childComplexity), true
 
-	case "AgendaEvent.minute":
-		if e.complexity.AgendaEvent.Minute == nil {
+	case "AgendaEvent.timeBegin":
+		if e.complexity.AgendaEvent.TimeBegin == nil {
 			break
 		}
 
-		return e.complexity.AgendaEvent.Minute(childComplexity), true
+		return e.complexity.AgendaEvent.TimeBegin(childComplexity), true
 
-	case "AgendaEvent.month":
-		if e.complexity.AgendaEvent.Month == nil {
+	case "AgendaEvent.timeEnd":
+		if e.complexity.AgendaEvent.TimeEnd == nil {
 			break
 		}
 
-		return e.complexity.AgendaEvent.Month(childComplexity), true
+		return e.complexity.AgendaEvent.TimeEnd(childComplexity), true
 
 	case "AgendaEvent.title":
 		if e.complexity.AgendaEvent.Title == nil {
@@ -158,12 +168,26 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.AgendaEvent.UserID(childComplexity), true
 
-	case "AgendaEvent.year":
-		if e.complexity.AgendaEvent.Year == nil {
+	case "Date.day":
+		if e.complexity.Date.Day == nil {
 			break
 		}
 
-		return e.complexity.AgendaEvent.Year(childComplexity), true
+		return e.complexity.Date.Day(childComplexity), true
+
+	case "Date.month":
+		if e.complexity.Date.Month == nil {
+			break
+		}
+
+		return e.complexity.Date.Month(childComplexity), true
+
+	case "Date.year":
+		if e.complexity.Date.Year == nil {
+			break
+		}
+
+		return e.complexity.Date.Year(childComplexity), true
 
 	case "Mutation.createAgendaEvent":
 		if e.complexity.Mutation.CreateAgendaEvent == nil {
@@ -175,7 +199,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateAgendaEvent(childComplexity, args["userId"].(int), args["title"].(string), args["description"].(*string), args["year"].(int), args["month"].(int), args["day"].(int), args["hour"].(*int), args["minute"].(*int)), true
+		return e.complexity.Mutation.CreateAgendaEvent(childComplexity, args["userId"].(int), args["doctorId"].(int), args["title"].(string), args["description"].(*string), args["date"].(model.DateInputRequired), args["timeBegin"].(model.TimeInputRequired), args["timeEnd"].(model.TimeInputRequired)), true
 
 	case "Mutation.deleteAgendaEvent":
 		if e.complexity.Mutation.DeleteAgendaEvent == nil {
@@ -199,7 +223,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateAgendaEvent(childComplexity, args["ID"].(int), args["title"].(*string), args["description"].(*string), args["year"].(*int), args["month"].(*int), args["day"].(*int), args["hour"].(*int), args["minute"].(*int)), true
+		return e.complexity.Mutation.UpdateAgendaEvent(childComplexity, args["ID"].(int), args["title"].(*string), args["description"].(*string), args["date"].(*model.DateInput), args["timeBegin"].(*model.TimeInput), args["timeEnd"].(*model.TimeInput)), true
 
 	case "Query.getAgenda":
 		if e.complexity.Query.GetAgenda == nil {
@@ -213,17 +237,17 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.GetAgenda(childComplexity, args["id"].(string)), true
 
-	case "Query.getAgendasByUserDateTime":
-		if e.complexity.Query.GetAgendasByUserDateTime == nil {
+	case "Query.getAgendaEvents":
+		if e.complexity.Query.GetAgendaEvents == nil {
 			break
 		}
 
-		args, err := ec.field_Query_getAgendasByUserDateTime_args(context.TODO(), rawArgs)
+		args, err := ec.field_Query_getAgendaEvents_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Query.GetAgendasByUserDateTime(childComplexity, args["userId"].(int), args["year"].(*int), args["month"].(*int), args["day"].(*int), args["hour"].(*int), args["minute"].(*int)), true
+		return e.complexity.Query.GetAgendaEvents(childComplexity, args["userId"].(int), args["date"].(*model.DateInput), args["time"].(*model.TimeInput)), true
 
 	case "Query.listAgendas":
 		if e.complexity.Query.ListAgendas == nil {
@@ -237,6 +261,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.ListAgendas(childComplexity, args["userId"].(int)), true
 
+	case "Time.hour":
+		if e.complexity.Time.Hour == nil {
+			break
+		}
+
+		return e.complexity.Time.Hour(childComplexity), true
+
+	case "Time.minute":
+		if e.complexity.Time.Minute == nil {
+			break
+		}
+
+		return e.complexity.Time.Minute(childComplexity), true
+
 	}
 	return 0, false
 }
@@ -244,7 +282,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	rc := graphql.GetOperationContext(ctx)
 	ec := executionContext{rc, e, 0, 0, make(chan graphql.DeferredResult)}
-	inputUnmarshalMap := graphql.BuildUnmarshalerMap()
+	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
+		ec.unmarshalInputDateInput,
+		ec.unmarshalInputDateInputRequired,
+		ec.unmarshalInputTimeInput,
+		ec.unmarshalInputTimeInputRequired,
+	)
 	first := true
 
 	switch rc.Operation.Operation {
@@ -368,41 +411,36 @@ func (ec *executionContext) field_Mutation_createAgendaEvent_args(ctx context.Co
 		return nil, err
 	}
 	args["userId"] = arg0
-	arg1, err := ec.field_Mutation_createAgendaEvent_argsTitle(ctx, rawArgs)
+	arg1, err := ec.field_Mutation_createAgendaEvent_argsDoctorID(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["title"] = arg1
-	arg2, err := ec.field_Mutation_createAgendaEvent_argsDescription(ctx, rawArgs)
+	args["doctorId"] = arg1
+	arg2, err := ec.field_Mutation_createAgendaEvent_argsTitle(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["description"] = arg2
-	arg3, err := ec.field_Mutation_createAgendaEvent_argsYear(ctx, rawArgs)
+	args["title"] = arg2
+	arg3, err := ec.field_Mutation_createAgendaEvent_argsDescription(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["year"] = arg3
-	arg4, err := ec.field_Mutation_createAgendaEvent_argsMonth(ctx, rawArgs)
+	args["description"] = arg3
+	arg4, err := ec.field_Mutation_createAgendaEvent_argsDate(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["month"] = arg4
-	arg5, err := ec.field_Mutation_createAgendaEvent_argsDay(ctx, rawArgs)
+	args["date"] = arg4
+	arg5, err := ec.field_Mutation_createAgendaEvent_argsTimeBegin(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["day"] = arg5
-	arg6, err := ec.field_Mutation_createAgendaEvent_argsHour(ctx, rawArgs)
+	args["timeBegin"] = arg5
+	arg6, err := ec.field_Mutation_createAgendaEvent_argsTimeEnd(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["hour"] = arg6
-	arg7, err := ec.field_Mutation_createAgendaEvent_argsMinute(ctx, rawArgs)
-	if err != nil {
-		return nil, err
-	}
-	args["minute"] = arg7
+	args["timeEnd"] = arg6
 	return args, nil
 }
 func (ec *executionContext) field_Mutation_createAgendaEvent_argsUserID(
@@ -411,6 +449,19 @@ func (ec *executionContext) field_Mutation_createAgendaEvent_argsUserID(
 ) (int, error) {
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
 	if tmp, ok := rawArgs["userId"]; ok {
+		return ec.unmarshalNInt2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_createAgendaEvent_argsDoctorID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("doctorId"))
+	if tmp, ok := rawArgs["doctorId"]; ok {
 		return ec.unmarshalNInt2int(ctx, tmp)
 	}
 
@@ -444,68 +495,42 @@ func (ec *executionContext) field_Mutation_createAgendaEvent_argsDescription(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Mutation_createAgendaEvent_argsYear(
+func (ec *executionContext) field_Mutation_createAgendaEvent_argsDate(
 	ctx context.Context,
 	rawArgs map[string]interface{},
-) (int, error) {
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("year"))
-	if tmp, ok := rawArgs["year"]; ok {
-		return ec.unmarshalNInt2int(ctx, tmp)
+) (model.DateInputRequired, error) {
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("date"))
+	if tmp, ok := rawArgs["date"]; ok {
+		return ec.unmarshalNDateInputRequired2agendaᚋgraphᚋmodelᚐDateInputRequired(ctx, tmp)
 	}
 
-	var zeroVal int
+	var zeroVal model.DateInputRequired
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Mutation_createAgendaEvent_argsMonth(
+func (ec *executionContext) field_Mutation_createAgendaEvent_argsTimeBegin(
 	ctx context.Context,
 	rawArgs map[string]interface{},
-) (int, error) {
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("month"))
-	if tmp, ok := rawArgs["month"]; ok {
-		return ec.unmarshalNInt2int(ctx, tmp)
+) (model.TimeInputRequired, error) {
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("timeBegin"))
+	if tmp, ok := rawArgs["timeBegin"]; ok {
+		return ec.unmarshalNTimeInputRequired2agendaᚋgraphᚋmodelᚐTimeInputRequired(ctx, tmp)
 	}
 
-	var zeroVal int
+	var zeroVal model.TimeInputRequired
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Mutation_createAgendaEvent_argsDay(
+func (ec *executionContext) field_Mutation_createAgendaEvent_argsTimeEnd(
 	ctx context.Context,
 	rawArgs map[string]interface{},
-) (int, error) {
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("day"))
-	if tmp, ok := rawArgs["day"]; ok {
-		return ec.unmarshalNInt2int(ctx, tmp)
+) (model.TimeInputRequired, error) {
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("timeEnd"))
+	if tmp, ok := rawArgs["timeEnd"]; ok {
+		return ec.unmarshalNTimeInputRequired2agendaᚋgraphᚋmodelᚐTimeInputRequired(ctx, tmp)
 	}
 
-	var zeroVal int
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Mutation_createAgendaEvent_argsHour(
-	ctx context.Context,
-	rawArgs map[string]interface{},
-) (*int, error) {
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("hour"))
-	if tmp, ok := rawArgs["hour"]; ok {
-		return ec.unmarshalOInt2ᚖint(ctx, tmp)
-	}
-
-	var zeroVal *int
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Mutation_createAgendaEvent_argsMinute(
-	ctx context.Context,
-	rawArgs map[string]interface{},
-) (*int, error) {
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("minute"))
-	if tmp, ok := rawArgs["minute"]; ok {
-		return ec.unmarshalOInt2ᚖint(ctx, tmp)
-	}
-
-	var zeroVal *int
+	var zeroVal model.TimeInputRequired
 	return zeroVal, nil
 }
 
@@ -550,31 +575,21 @@ func (ec *executionContext) field_Mutation_updateAgendaEvent_args(ctx context.Co
 		return nil, err
 	}
 	args["description"] = arg2
-	arg3, err := ec.field_Mutation_updateAgendaEvent_argsYear(ctx, rawArgs)
+	arg3, err := ec.field_Mutation_updateAgendaEvent_argsDate(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["year"] = arg3
-	arg4, err := ec.field_Mutation_updateAgendaEvent_argsMonth(ctx, rawArgs)
+	args["date"] = arg3
+	arg4, err := ec.field_Mutation_updateAgendaEvent_argsTimeBegin(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["month"] = arg4
-	arg5, err := ec.field_Mutation_updateAgendaEvent_argsDay(ctx, rawArgs)
+	args["timeBegin"] = arg4
+	arg5, err := ec.field_Mutation_updateAgendaEvent_argsTimeEnd(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["day"] = arg5
-	arg6, err := ec.field_Mutation_updateAgendaEvent_argsHour(ctx, rawArgs)
-	if err != nil {
-		return nil, err
-	}
-	args["hour"] = arg6
-	arg7, err := ec.field_Mutation_updateAgendaEvent_argsMinute(ctx, rawArgs)
-	if err != nil {
-		return nil, err
-	}
-	args["minute"] = arg7
+	args["timeEnd"] = arg5
 	return args, nil
 }
 func (ec *executionContext) field_Mutation_updateAgendaEvent_argsID(
@@ -616,68 +631,42 @@ func (ec *executionContext) field_Mutation_updateAgendaEvent_argsDescription(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Mutation_updateAgendaEvent_argsYear(
+func (ec *executionContext) field_Mutation_updateAgendaEvent_argsDate(
 	ctx context.Context,
 	rawArgs map[string]interface{},
-) (*int, error) {
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("year"))
-	if tmp, ok := rawArgs["year"]; ok {
-		return ec.unmarshalOInt2ᚖint(ctx, tmp)
+) (*model.DateInput, error) {
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("date"))
+	if tmp, ok := rawArgs["date"]; ok {
+		return ec.unmarshalODateInput2ᚖagendaᚋgraphᚋmodelᚐDateInput(ctx, tmp)
 	}
 
-	var zeroVal *int
+	var zeroVal *model.DateInput
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Mutation_updateAgendaEvent_argsMonth(
+func (ec *executionContext) field_Mutation_updateAgendaEvent_argsTimeBegin(
 	ctx context.Context,
 	rawArgs map[string]interface{},
-) (*int, error) {
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("month"))
-	if tmp, ok := rawArgs["month"]; ok {
-		return ec.unmarshalOInt2ᚖint(ctx, tmp)
+) (*model.TimeInput, error) {
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("timeBegin"))
+	if tmp, ok := rawArgs["timeBegin"]; ok {
+		return ec.unmarshalOTimeInput2ᚖagendaᚋgraphᚋmodelᚐTimeInput(ctx, tmp)
 	}
 
-	var zeroVal *int
+	var zeroVal *model.TimeInput
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Mutation_updateAgendaEvent_argsDay(
+func (ec *executionContext) field_Mutation_updateAgendaEvent_argsTimeEnd(
 	ctx context.Context,
 	rawArgs map[string]interface{},
-) (*int, error) {
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("day"))
-	if tmp, ok := rawArgs["day"]; ok {
-		return ec.unmarshalOInt2ᚖint(ctx, tmp)
+) (*model.TimeInput, error) {
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("timeEnd"))
+	if tmp, ok := rawArgs["timeEnd"]; ok {
+		return ec.unmarshalOTimeInput2ᚖagendaᚋgraphᚋmodelᚐTimeInput(ctx, tmp)
 	}
 
-	var zeroVal *int
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Mutation_updateAgendaEvent_argsHour(
-	ctx context.Context,
-	rawArgs map[string]interface{},
-) (*int, error) {
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("hour"))
-	if tmp, ok := rawArgs["hour"]; ok {
-		return ec.unmarshalOInt2ᚖint(ctx, tmp)
-	}
-
-	var zeroVal *int
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Mutation_updateAgendaEvent_argsMinute(
-	ctx context.Context,
-	rawArgs map[string]interface{},
-) (*int, error) {
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("minute"))
-	if tmp, ok := rawArgs["minute"]; ok {
-		return ec.unmarshalOInt2ᚖint(ctx, tmp)
-	}
-
-	var zeroVal *int
+	var zeroVal *model.TimeInput
 	return zeroVal, nil
 }
 
@@ -704,6 +693,65 @@ func (ec *executionContext) field_Query___type_argsName(
 	return zeroVal, nil
 }
 
+func (ec *executionContext) field_Query_getAgendaEvents_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	arg0, err := ec.field_Query_getAgendaEvents_argsUserID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["userId"] = arg0
+	arg1, err := ec.field_Query_getAgendaEvents_argsDate(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["date"] = arg1
+	arg2, err := ec.field_Query_getAgendaEvents_argsTime(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["time"] = arg2
+	return args, nil
+}
+func (ec *executionContext) field_Query_getAgendaEvents_argsUserID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
+	if tmp, ok := rawArgs["userId"]; ok {
+		return ec.unmarshalNInt2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_getAgendaEvents_argsDate(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*model.DateInput, error) {
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("date"))
+	if tmp, ok := rawArgs["date"]; ok {
+		return ec.unmarshalODateInput2ᚖagendaᚋgraphᚋmodelᚐDateInput(ctx, tmp)
+	}
+
+	var zeroVal *model.DateInput
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_getAgendaEvents_argsTime(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*model.TimeInput, error) {
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("time"))
+	if tmp, ok := rawArgs["time"]; ok {
+		return ec.unmarshalOTimeInput2ᚖagendaᚋgraphᚋmodelᚐTimeInput(ctx, tmp)
+	}
+
+	var zeroVal *model.TimeInput
+	return zeroVal, nil
+}
+
 func (ec *executionContext) field_Query_getAgenda_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -724,119 +772,6 @@ func (ec *executionContext) field_Query_getAgenda_argsID(
 	}
 
 	var zeroVal string
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Query_getAgendasByUserDateTime_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	arg0, err := ec.field_Query_getAgendasByUserDateTime_argsUserID(ctx, rawArgs)
-	if err != nil {
-		return nil, err
-	}
-	args["userId"] = arg0
-	arg1, err := ec.field_Query_getAgendasByUserDateTime_argsYear(ctx, rawArgs)
-	if err != nil {
-		return nil, err
-	}
-	args["year"] = arg1
-	arg2, err := ec.field_Query_getAgendasByUserDateTime_argsMonth(ctx, rawArgs)
-	if err != nil {
-		return nil, err
-	}
-	args["month"] = arg2
-	arg3, err := ec.field_Query_getAgendasByUserDateTime_argsDay(ctx, rawArgs)
-	if err != nil {
-		return nil, err
-	}
-	args["day"] = arg3
-	arg4, err := ec.field_Query_getAgendasByUserDateTime_argsHour(ctx, rawArgs)
-	if err != nil {
-		return nil, err
-	}
-	args["hour"] = arg4
-	arg5, err := ec.field_Query_getAgendasByUserDateTime_argsMinute(ctx, rawArgs)
-	if err != nil {
-		return nil, err
-	}
-	args["minute"] = arg5
-	return args, nil
-}
-func (ec *executionContext) field_Query_getAgendasByUserDateTime_argsUserID(
-	ctx context.Context,
-	rawArgs map[string]interface{},
-) (int, error) {
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
-	if tmp, ok := rawArgs["userId"]; ok {
-		return ec.unmarshalNInt2int(ctx, tmp)
-	}
-
-	var zeroVal int
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Query_getAgendasByUserDateTime_argsYear(
-	ctx context.Context,
-	rawArgs map[string]interface{},
-) (*int, error) {
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("year"))
-	if tmp, ok := rawArgs["year"]; ok {
-		return ec.unmarshalOInt2ᚖint(ctx, tmp)
-	}
-
-	var zeroVal *int
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Query_getAgendasByUserDateTime_argsMonth(
-	ctx context.Context,
-	rawArgs map[string]interface{},
-) (*int, error) {
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("month"))
-	if tmp, ok := rawArgs["month"]; ok {
-		return ec.unmarshalOInt2ᚖint(ctx, tmp)
-	}
-
-	var zeroVal *int
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Query_getAgendasByUserDateTime_argsDay(
-	ctx context.Context,
-	rawArgs map[string]interface{},
-) (*int, error) {
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("day"))
-	if tmp, ok := rawArgs["day"]; ok {
-		return ec.unmarshalOInt2ᚖint(ctx, tmp)
-	}
-
-	var zeroVal *int
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Query_getAgendasByUserDateTime_argsHour(
-	ctx context.Context,
-	rawArgs map[string]interface{},
-) (*int, error) {
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("hour"))
-	if tmp, ok := rawArgs["hour"]; ok {
-		return ec.unmarshalOInt2ᚖint(ctx, tmp)
-	}
-
-	var zeroVal *int
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Query_getAgendasByUserDateTime_argsMinute(
-	ctx context.Context,
-	rawArgs map[string]interface{},
-) (*int, error) {
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("minute"))
-	if tmp, ok := rawArgs["minute"]; ok {
-		return ec.unmarshalOInt2ᚖint(ctx, tmp)
-	}
-
-	var zeroVal *int
 	return zeroVal, nil
 }
 
@@ -1005,6 +940,50 @@ func (ec *executionContext) fieldContext_AgendaEvent_userId(_ context.Context, f
 	return fc, nil
 }
 
+func (ec *executionContext) _AgendaEvent_doctorId(ctx context.Context, field graphql.CollectedField, obj *model.AgendaEvent) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AgendaEvent_doctorId(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DoctorID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AgendaEvent_doctorId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AgendaEvent",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _AgendaEvent_title(ctx context.Context, field graphql.CollectedField, obj *model.AgendaEvent) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_AgendaEvent_title(ctx, field)
 	if err != nil {
@@ -1090,8 +1069,160 @@ func (ec *executionContext) fieldContext_AgendaEvent_description(_ context.Conte
 	return fc, nil
 }
 
-func (ec *executionContext) _AgendaEvent_year(ctx context.Context, field graphql.CollectedField, obj *model.AgendaEvent) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_AgendaEvent_year(ctx, field)
+func (ec *executionContext) _AgendaEvent_date(ctx context.Context, field graphql.CollectedField, obj *model.AgendaEvent) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AgendaEvent_date(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Date, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.Date)
+	fc.Result = res
+	return ec.marshalNDate2ᚖagendaᚋgraphᚋmodelᚐDate(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AgendaEvent_date(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AgendaEvent",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "year":
+				return ec.fieldContext_Date_year(ctx, field)
+			case "month":
+				return ec.fieldContext_Date_month(ctx, field)
+			case "day":
+				return ec.fieldContext_Date_day(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Date", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AgendaEvent_timeBegin(ctx context.Context, field graphql.CollectedField, obj *model.AgendaEvent) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AgendaEvent_timeBegin(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TimeBegin, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.Time)
+	fc.Result = res
+	return ec.marshalNTime2ᚖagendaᚋgraphᚋmodelᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AgendaEvent_timeBegin(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AgendaEvent",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "hour":
+				return ec.fieldContext_Time_hour(ctx, field)
+			case "minute":
+				return ec.fieldContext_Time_minute(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Time", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AgendaEvent_timeEnd(ctx context.Context, field graphql.CollectedField, obj *model.AgendaEvent) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AgendaEvent_timeEnd(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TimeEnd, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.Time)
+	fc.Result = res
+	return ec.marshalNTime2ᚖagendaᚋgraphᚋmodelᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AgendaEvent_timeEnd(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AgendaEvent",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "hour":
+				return ec.fieldContext_Time_hour(ctx, field)
+			case "minute":
+				return ec.fieldContext_Time_minute(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Time", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Date_year(ctx context.Context, field graphql.CollectedField, obj *model.Date) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Date_year(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -1121,9 +1252,9 @@ func (ec *executionContext) _AgendaEvent_year(ctx context.Context, field graphql
 	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_AgendaEvent_year(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Date_year(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "AgendaEvent",
+		Object:     "Date",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -1134,8 +1265,8 @@ func (ec *executionContext) fieldContext_AgendaEvent_year(_ context.Context, fie
 	return fc, nil
 }
 
-func (ec *executionContext) _AgendaEvent_month(ctx context.Context, field graphql.CollectedField, obj *model.AgendaEvent) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_AgendaEvent_month(ctx, field)
+func (ec *executionContext) _Date_month(ctx context.Context, field graphql.CollectedField, obj *model.Date) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Date_month(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -1165,9 +1296,9 @@ func (ec *executionContext) _AgendaEvent_month(ctx context.Context, field graphq
 	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_AgendaEvent_month(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Date_month(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "AgendaEvent",
+		Object:     "Date",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -1178,8 +1309,8 @@ func (ec *executionContext) fieldContext_AgendaEvent_month(_ context.Context, fi
 	return fc, nil
 }
 
-func (ec *executionContext) _AgendaEvent_day(ctx context.Context, field graphql.CollectedField, obj *model.AgendaEvent) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_AgendaEvent_day(ctx, field)
+func (ec *executionContext) _Date_day(ctx context.Context, field graphql.CollectedField, obj *model.Date) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Date_day(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -1209,91 +1340,9 @@ func (ec *executionContext) _AgendaEvent_day(ctx context.Context, field graphql.
 	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_AgendaEvent_day(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Date_day(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "AgendaEvent",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _AgendaEvent_hour(ctx context.Context, field graphql.CollectedField, obj *model.AgendaEvent) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_AgendaEvent_hour(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Hour, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*int)
-	fc.Result = res
-	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_AgendaEvent_hour(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "AgendaEvent",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _AgendaEvent_minute(ctx context.Context, field graphql.CollectedField, obj *model.AgendaEvent) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_AgendaEvent_minute(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Minute, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*int)
-	fc.Result = res
-	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_AgendaEvent_minute(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "AgendaEvent",
+		Object:     "Date",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -1318,7 +1367,7 @@ func (ec *executionContext) _Mutation_createAgendaEvent(ctx context.Context, fie
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateAgendaEvent(rctx, fc.Args["userId"].(int), fc.Args["title"].(string), fc.Args["description"].(*string), fc.Args["year"].(int), fc.Args["month"].(int), fc.Args["day"].(int), fc.Args["hour"].(*int), fc.Args["minute"].(*int))
+		return ec.resolvers.Mutation().CreateAgendaEvent(rctx, fc.Args["userId"].(int), fc.Args["doctorId"].(int), fc.Args["title"].(string), fc.Args["description"].(*string), fc.Args["date"].(model.DateInputRequired), fc.Args["timeBegin"].(model.TimeInputRequired), fc.Args["timeEnd"].(model.TimeInputRequired))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1347,20 +1396,18 @@ func (ec *executionContext) fieldContext_Mutation_createAgendaEvent(ctx context.
 				return ec.fieldContext_AgendaEvent_id(ctx, field)
 			case "userId":
 				return ec.fieldContext_AgendaEvent_userId(ctx, field)
+			case "doctorId":
+				return ec.fieldContext_AgendaEvent_doctorId(ctx, field)
 			case "title":
 				return ec.fieldContext_AgendaEvent_title(ctx, field)
 			case "description":
 				return ec.fieldContext_AgendaEvent_description(ctx, field)
-			case "year":
-				return ec.fieldContext_AgendaEvent_year(ctx, field)
-			case "month":
-				return ec.fieldContext_AgendaEvent_month(ctx, field)
-			case "day":
-				return ec.fieldContext_AgendaEvent_day(ctx, field)
-			case "hour":
-				return ec.fieldContext_AgendaEvent_hour(ctx, field)
-			case "minute":
-				return ec.fieldContext_AgendaEvent_minute(ctx, field)
+			case "date":
+				return ec.fieldContext_AgendaEvent_date(ctx, field)
+			case "timeBegin":
+				return ec.fieldContext_AgendaEvent_timeBegin(ctx, field)
+			case "timeEnd":
+				return ec.fieldContext_AgendaEvent_timeEnd(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type AgendaEvent", field.Name)
 		},
@@ -1393,7 +1440,7 @@ func (ec *executionContext) _Mutation_updateAgendaEvent(ctx context.Context, fie
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateAgendaEvent(rctx, fc.Args["ID"].(int), fc.Args["title"].(*string), fc.Args["description"].(*string), fc.Args["year"].(*int), fc.Args["month"].(*int), fc.Args["day"].(*int), fc.Args["hour"].(*int), fc.Args["minute"].(*int))
+		return ec.resolvers.Mutation().UpdateAgendaEvent(rctx, fc.Args["ID"].(int), fc.Args["title"].(*string), fc.Args["description"].(*string), fc.Args["date"].(*model.DateInput), fc.Args["timeBegin"].(*model.TimeInput), fc.Args["timeEnd"].(*model.TimeInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1422,20 +1469,18 @@ func (ec *executionContext) fieldContext_Mutation_updateAgendaEvent(ctx context.
 				return ec.fieldContext_AgendaEvent_id(ctx, field)
 			case "userId":
 				return ec.fieldContext_AgendaEvent_userId(ctx, field)
+			case "doctorId":
+				return ec.fieldContext_AgendaEvent_doctorId(ctx, field)
 			case "title":
 				return ec.fieldContext_AgendaEvent_title(ctx, field)
 			case "description":
 				return ec.fieldContext_AgendaEvent_description(ctx, field)
-			case "year":
-				return ec.fieldContext_AgendaEvent_year(ctx, field)
-			case "month":
-				return ec.fieldContext_AgendaEvent_month(ctx, field)
-			case "day":
-				return ec.fieldContext_AgendaEvent_day(ctx, field)
-			case "hour":
-				return ec.fieldContext_AgendaEvent_hour(ctx, field)
-			case "minute":
-				return ec.fieldContext_AgendaEvent_minute(ctx, field)
+			case "date":
+				return ec.fieldContext_AgendaEvent_date(ctx, field)
+			case "timeBegin":
+				return ec.fieldContext_AgendaEvent_timeBegin(ctx, field)
+			case "timeEnd":
+				return ec.fieldContext_AgendaEvent_timeEnd(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type AgendaEvent", field.Name)
 		},
@@ -1549,20 +1594,18 @@ func (ec *executionContext) fieldContext_Query_getAgenda(ctx context.Context, fi
 				return ec.fieldContext_AgendaEvent_id(ctx, field)
 			case "userId":
 				return ec.fieldContext_AgendaEvent_userId(ctx, field)
+			case "doctorId":
+				return ec.fieldContext_AgendaEvent_doctorId(ctx, field)
 			case "title":
 				return ec.fieldContext_AgendaEvent_title(ctx, field)
 			case "description":
 				return ec.fieldContext_AgendaEvent_description(ctx, field)
-			case "year":
-				return ec.fieldContext_AgendaEvent_year(ctx, field)
-			case "month":
-				return ec.fieldContext_AgendaEvent_month(ctx, field)
-			case "day":
-				return ec.fieldContext_AgendaEvent_day(ctx, field)
-			case "hour":
-				return ec.fieldContext_AgendaEvent_hour(ctx, field)
-			case "minute":
-				return ec.fieldContext_AgendaEvent_minute(ctx, field)
+			case "date":
+				return ec.fieldContext_AgendaEvent_date(ctx, field)
+			case "timeBegin":
+				return ec.fieldContext_AgendaEvent_timeBegin(ctx, field)
+			case "timeEnd":
+				return ec.fieldContext_AgendaEvent_timeEnd(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type AgendaEvent", field.Name)
 		},
@@ -1624,20 +1667,18 @@ func (ec *executionContext) fieldContext_Query_listAgendas(ctx context.Context, 
 				return ec.fieldContext_AgendaEvent_id(ctx, field)
 			case "userId":
 				return ec.fieldContext_AgendaEvent_userId(ctx, field)
+			case "doctorId":
+				return ec.fieldContext_AgendaEvent_doctorId(ctx, field)
 			case "title":
 				return ec.fieldContext_AgendaEvent_title(ctx, field)
 			case "description":
 				return ec.fieldContext_AgendaEvent_description(ctx, field)
-			case "year":
-				return ec.fieldContext_AgendaEvent_year(ctx, field)
-			case "month":
-				return ec.fieldContext_AgendaEvent_month(ctx, field)
-			case "day":
-				return ec.fieldContext_AgendaEvent_day(ctx, field)
-			case "hour":
-				return ec.fieldContext_AgendaEvent_hour(ctx, field)
-			case "minute":
-				return ec.fieldContext_AgendaEvent_minute(ctx, field)
+			case "date":
+				return ec.fieldContext_AgendaEvent_date(ctx, field)
+			case "timeBegin":
+				return ec.fieldContext_AgendaEvent_timeBegin(ctx, field)
+			case "timeEnd":
+				return ec.fieldContext_AgendaEvent_timeEnd(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type AgendaEvent", field.Name)
 		},
@@ -1656,8 +1697,8 @@ func (ec *executionContext) fieldContext_Query_listAgendas(ctx context.Context, 
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_getAgendasByUserDateTime(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_getAgendasByUserDateTime(ctx, field)
+func (ec *executionContext) _Query_getAgendaEvents(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_getAgendaEvents(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -1670,7 +1711,7 @@ func (ec *executionContext) _Query_getAgendasByUserDateTime(ctx context.Context,
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetAgendasByUserDateTime(rctx, fc.Args["userId"].(int), fc.Args["year"].(*int), fc.Args["month"].(*int), fc.Args["day"].(*int), fc.Args["hour"].(*int), fc.Args["minute"].(*int))
+		return ec.resolvers.Query().GetAgendaEvents(rctx, fc.Args["userId"].(int), fc.Args["date"].(*model.DateInput), fc.Args["time"].(*model.TimeInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1687,7 +1728,7 @@ func (ec *executionContext) _Query_getAgendasByUserDateTime(ctx context.Context,
 	return ec.marshalNAgendaEvent2ᚕᚖagendaᚋgraphᚋmodelᚐAgendaEventᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_getAgendasByUserDateTime(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_getAgendaEvents(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -1699,20 +1740,18 @@ func (ec *executionContext) fieldContext_Query_getAgendasByUserDateTime(ctx cont
 				return ec.fieldContext_AgendaEvent_id(ctx, field)
 			case "userId":
 				return ec.fieldContext_AgendaEvent_userId(ctx, field)
+			case "doctorId":
+				return ec.fieldContext_AgendaEvent_doctorId(ctx, field)
 			case "title":
 				return ec.fieldContext_AgendaEvent_title(ctx, field)
 			case "description":
 				return ec.fieldContext_AgendaEvent_description(ctx, field)
-			case "year":
-				return ec.fieldContext_AgendaEvent_year(ctx, field)
-			case "month":
-				return ec.fieldContext_AgendaEvent_month(ctx, field)
-			case "day":
-				return ec.fieldContext_AgendaEvent_day(ctx, field)
-			case "hour":
-				return ec.fieldContext_AgendaEvent_hour(ctx, field)
-			case "minute":
-				return ec.fieldContext_AgendaEvent_minute(ctx, field)
+			case "date":
+				return ec.fieldContext_AgendaEvent_date(ctx, field)
+			case "timeBegin":
+				return ec.fieldContext_AgendaEvent_timeBegin(ctx, field)
+			case "timeEnd":
+				return ec.fieldContext_AgendaEvent_timeEnd(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type AgendaEvent", field.Name)
 		},
@@ -1724,7 +1763,7 @@ func (ec *executionContext) fieldContext_Query_getAgendasByUserDateTime(ctx cont
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_getAgendasByUserDateTime_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_getAgendaEvents_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -1855,6 +1894,94 @@ func (ec *executionContext) fieldContext_Query___schema(_ context.Context, field
 				return ec.fieldContext___Schema_directives(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type __Schema", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Time_hour(ctx context.Context, field graphql.CollectedField, obj *model.Time) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Time_hour(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Hour, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Time_hour(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Time",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Time_minute(ctx context.Context, field graphql.CollectedField, obj *model.Time) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Time_minute(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Minute, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Time_minute(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Time",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	return fc, nil
@@ -3633,6 +3760,156 @@ func (ec *executionContext) fieldContext___Type_specifiedByURL(_ context.Context
 
 // region    **************************** input.gotpl *****************************
 
+func (ec *executionContext) unmarshalInputDateInput(ctx context.Context, obj interface{}) (model.DateInput, error) {
+	var it model.DateInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"year", "month", "day"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "year":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("year"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Year = data
+		case "month":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("month"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Month = data
+		case "day":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("day"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Day = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputDateInputRequired(ctx context.Context, obj interface{}) (model.DateInputRequired, error) {
+	var it model.DateInputRequired
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"year", "month", "day"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "year":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("year"))
+			data, err := ec.unmarshalNInt2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Year = data
+		case "month":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("month"))
+			data, err := ec.unmarshalNInt2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Month = data
+		case "day":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("day"))
+			data, err := ec.unmarshalNInt2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Day = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputTimeInput(ctx context.Context, obj interface{}) (model.TimeInput, error) {
+	var it model.TimeInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"hour", "minute"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "hour":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hour"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Hour = data
+		case "minute":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("minute"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Minute = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputTimeInputRequired(ctx context.Context, obj interface{}) (model.TimeInputRequired, error) {
+	var it model.TimeInputRequired
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"hour", "minute"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "hour":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hour"))
+			data, err := ec.unmarshalNInt2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Hour = data
+		case "minute":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("minute"))
+			data, err := ec.unmarshalNInt2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Minute = data
+		}
+	}
+
+	return it, nil
+}
+
 // endregion **************************** input.gotpl *****************************
 
 // region    ************************** interface.gotpl ***************************
@@ -3662,6 +3939,11 @@ func (ec *executionContext) _AgendaEvent(ctx context.Context, sel ast.SelectionS
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
+		case "doctorId":
+			out.Values[i] = ec._AgendaEvent_doctorId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "title":
 			out.Values[i] = ec._AgendaEvent_title(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -3669,25 +3951,70 @@ func (ec *executionContext) _AgendaEvent(ctx context.Context, sel ast.SelectionS
 			}
 		case "description":
 			out.Values[i] = ec._AgendaEvent_description(ctx, field, obj)
+		case "date":
+			out.Values[i] = ec._AgendaEvent_date(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "timeBegin":
+			out.Values[i] = ec._AgendaEvent_timeBegin(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "timeEnd":
+			out.Values[i] = ec._AgendaEvent_timeEnd(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var dateImplementors = []string{"Date"}
+
+func (ec *executionContext) _Date(ctx context.Context, sel ast.SelectionSet, obj *model.Date) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, dateImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Date")
 		case "year":
-			out.Values[i] = ec._AgendaEvent_year(ctx, field, obj)
+			out.Values[i] = ec._Date_year(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
 		case "month":
-			out.Values[i] = ec._AgendaEvent_month(ctx, field, obj)
+			out.Values[i] = ec._Date_month(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
 		case "day":
-			out.Values[i] = ec._AgendaEvent_day(ctx, field, obj)
+			out.Values[i] = ec._Date_day(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "hour":
-			out.Values[i] = ec._AgendaEvent_hour(ctx, field, obj)
-		case "minute":
-			out.Values[i] = ec._AgendaEvent_minute(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -3834,7 +4161,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "getAgendasByUserDateTime":
+		case "getAgendaEvents":
 			field := field
 
 			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
@@ -3843,7 +4170,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_getAgendasByUserDateTime(ctx, field)
+				res = ec._Query_getAgendaEvents(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
@@ -3864,6 +4191,50 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Query___schema(ctx, field)
 			})
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var timeImplementors = []string{"Time"}
+
+func (ec *executionContext) _Time(ctx context.Context, sel ast.SelectionSet, obj *model.Time) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, timeImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Time")
+		case "hour":
+			out.Values[i] = ec._Time_hour(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "minute":
+			out.Values[i] = ec._Time_minute(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -4286,6 +4657,21 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
+func (ec *executionContext) marshalNDate2ᚖagendaᚋgraphᚋmodelᚐDate(ctx context.Context, sel ast.SelectionSet, v *model.Date) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._Date(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNDateInputRequired2agendaᚋgraphᚋmodelᚐDateInputRequired(ctx context.Context, v interface{}) (model.DateInputRequired, error) {
+	res, err := ec.unmarshalInputDateInputRequired(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalNID2string(ctx context.Context, v interface{}) (string, error) {
 	res, err := graphql.UnmarshalID(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -4329,6 +4715,21 @@ func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.S
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) marshalNTime2ᚖagendaᚋgraphᚋmodelᚐTime(ctx context.Context, sel ast.SelectionSet, v *model.Time) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._Time(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNTimeInputRequired2agendaᚋgraphᚋmodelᚐTimeInputRequired(ctx context.Context, v interface{}) (model.TimeInputRequired, error) {
+	res, err := ec.unmarshalInputTimeInputRequired(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalN__Directive2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐDirective(ctx context.Context, sel ast.SelectionSet, v introspection.Directive) graphql.Marshaler {
@@ -4617,6 +5018,14 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return res
 }
 
+func (ec *executionContext) unmarshalODateInput2ᚖagendaᚋgraphᚋmodelᚐDateInput(ctx context.Context, v interface{}) (*model.DateInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputDateInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalOInt2ᚖint(ctx context.Context, v interface{}) (*int, error) {
 	if v == nil {
 		return nil, nil
@@ -4647,6 +5056,14 @@ func (ec *executionContext) marshalOString2ᚖstring(ctx context.Context, sel as
 	}
 	res := graphql.MarshalString(*v)
 	return res
+}
+
+func (ec *executionContext) unmarshalOTimeInput2ᚖagendaᚋgraphᚋmodelᚐTimeInput(ctx context.Context, v interface{}) (*model.TimeInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputTimeInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalO__EnumValue2ᚕgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐEnumValueᚄ(ctx context.Context, sel ast.SelectionSet, v []introspection.EnumValue) graphql.Marshaler {

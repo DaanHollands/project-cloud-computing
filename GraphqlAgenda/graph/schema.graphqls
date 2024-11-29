@@ -1,42 +1,81 @@
-type AgendaEvent {
-  id: ID!
-  userId: Int!
-  title: String!
-  description: String
+type Date {
   year: Int!
   month: Int!
   day: Int!
+}
+
+type Time {
+  hour: Int!
+  minute: Int!
+}
+
+input DateInput {
+  year: Int
+  month: Int
+  day: Int
+}
+
+input DateInputRequired {
+  year: Int!
+  month: Int!
+  day: Int!
+}
+
+input TimeInput {
   hour: Int
   minute: Int
 }
 
+input TimeInputRequired {
+  hour: Int!
+  minute: Int!
+}
+
+type AgendaEvent {
+  id: ID!
+  userId: Int!
+  doctorId: Int!
+  title: String!
+  description: String
+  date: Date!
+  timeBegin: Time!
+  timeEnd: Time!
+}
+
 type Query {
-  getAgenda(id: ID!): AgendaEvent
-  listAgendas(userId: Int!): [AgendaEvent!]!
-  getAgendasByUserDateTime(userId: Int!, year: Int, month: Int, day: Int, hour: Int, minute: Int): [AgendaEvent!]!
+  getAgenda(
+    id: ID!
+  ): AgendaEvent
+
+  listAgendas(
+    userId: Int!  
+  ): [AgendaEvent!]!
+
+  getAgendaEvents(
+    userId: Int! 
+    date: DateInput
+    time: TimeInput
+  ): [AgendaEvent!]!
 }
 
 type Mutation {
   createAgendaEvent(
     userId: Int!
+    doctorId: Int!
     title: String!
     description: String
-    year: Int!
-    month: Int!
-    day: Int!
-    hour: Int
-    minute: Int
+    date: DateInputRequired!
+    timeBegin: TimeInputRequired!
+    timeEnd: TimeInputRequired!
   ): AgendaEvent!
 
   updateAgendaEvent(
     ID: Int!
     title: String
     description: String
-    year: Int
-    month: Int
-    day: Int
-    hour: Int
-    minute: Int
+    date: DateInput
+    timeBegin: TimeInput
+    timeEnd: TimeInput
   ): AgendaEvent!
 
   deleteAgendaEvent(id: ID!): Boolean!

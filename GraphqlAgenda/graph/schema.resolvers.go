@@ -12,28 +12,19 @@ import (
 )
 
 // CreateAgendaEvent is the resolver for the createAgendaEvent field.
-func (r *mutationResolver) CreateAgendaEvent(ctx context.Context, userID int, title string, description *string, year int, month int, day int, hour *int, minute *int) (*model.AgendaEvent, error) {
+func (r *mutationResolver) CreateAgendaEvent(ctx context.Context, userID int, doctorID int, title string, description *string, date model.DateInputRequired, timeBegin model.TimeInputRequired, timeEnd model.TimeInputRequired) (*model.AgendaEvent, error) {
 	agendaEvent := &dbModels.AgendaEvent{
 		UserID:      uint(userID),
+		DoctorID:    uint(doctorID),
 		Title:       title,
 		Description: *description,
-		Year:        uint(year),
-		Month:       uint(month),
-		Day:         uint(day),
-		Hour: func(h *int) *uint {
-			if h == nil {
-				return nil
-			}
-			uh := uint(*h)
-			return &uh
-		}(hour),
-		Minute: func(m *int) *uint {
-			if m == nil {
-				return nil
-			}
-			um := uint(*m)
-			return &um
-		}(minute),
+		Year:        uint(date.Year),
+		Month:       uint(date.Month),
+		Day:         uint(date.Day),
+		HourBegin:   uint(timeBegin.Hour),
+		MinuteBegin: uint(timeBegin.Minute),
+		HourEnd:     uint(timeEnd.Hour),
+		MinuteEnd:   uint(timeEnd.Minute),
 	}
 
 	if err := r.DB.Create(agendaEvent).Error; err != nil {
@@ -45,7 +36,7 @@ func (r *mutationResolver) CreateAgendaEvent(ctx context.Context, userID int, ti
 }
 
 // UpdateAgendaEvent is the resolver for the updateAgendaEvent field.
-func (r *mutationResolver) UpdateAgendaEvent(ctx context.Context, id int, title *string, description *string, year *int, month *int, day *int, hour *int, minute *int) (*model.AgendaEvent, error) {
+func (r *mutationResolver) UpdateAgendaEvent(ctx context.Context, id int, title *string, description *string, date *model.DateInput, timeBegin *model.TimeInput, timeEnd *model.TimeInput) (*model.AgendaEvent, error) {
 	var agendaEvent dbModels.AgendaEvent
 	if err := r.DB.First(&agendaEvent, id).Error; err != nil {
 		return nil, fmt.Errorf("invalid event: ID not found")
@@ -57,20 +48,32 @@ func (r *mutationResolver) UpdateAgendaEvent(ctx context.Context, id int, title 
 	if description != nil {
 		updates["description"] = *description
 	}
-	if year != nil {
-		updates["year"] = *year
+	if date != nil {
+		if date.Year != nil {
+			updates["year"] = *date.Year
+		}
+		if date.Month != nil {
+			updates["month"] = *date.Month
+		}
+		if date.Day != nil {
+			updates["day"] = *date.Day
+		}
 	}
-	if month != nil {
-		updates["month"] = *month
+	if timeBegin != nil {
+		if timeBegin.Hour != nil {
+			updates["hour"] = *timeBegin.Hour
+		}
+		if timeBegin.Minute != nil {
+			updates["minute"] = *timeBegin.Minute
+		}
 	}
-	if day != nil {
-		updates["day"] = *day
-	}
-	if hour != nil {
-		updates["hour"] = *hour
-	}
-	if minute != nil {
-		updates["minute"] = *minute
+	if timeEnd != nil {
+		if timeEnd.Hour != nil {
+			updates["hour"] = *timeEnd.Hour
+		}
+		if timeEnd.Minute != nil {
+			updates["minute"] = *timeEnd.Minute
+		}
 	}
 
 	if err := r.DB.Model(&agendaEvent).Updates(updates).Error; err != nil {
@@ -121,23 +124,27 @@ func (r *queryResolver) ListAgendas(ctx context.Context, userID int) ([]*model.A
 	return result, nil
 }
 
-// GetAgendasByUserDateTime is the resolver for the getAgendasByUserDateTime field.
-func (r *queryResolver) GetAgendasByUserDateTime(ctx context.Context, userID int, year *int, month *int, day *int, hour *int, minute *int) ([]*model.AgendaEvent, error) {
+// GetAgendaEvents is the resolver for the getAgendaEvents field.
+func (r *queryResolver) GetAgendaEvents(ctx context.Context, userID int, date *model.DateInput, time *model.TimeInput) ([]*model.AgendaEvent, error) {
 	query := r.DB.Where("user_id = ?", userID)
-	if year != nil {
-		query = query.Where("year = ?", *year)
+	if date != nil {
+		if date.Year != nil {
+			query = query.Where("year = ?", *date.Year)
+		}
+		if date.Month != nil {
+			query = query.Where("month = ?", *date.Month)
+		}
+		if date.Day != nil {
+			query = query.Where("day = ?", *date.Day)
+		}
 	}
-	if month != nil {
-		query = query.Where("month = ?", *month)
-	}
-	if day != nil {
-		query = query.Where("day = ?", *day)
-	}
-	if hour != nil {
-		query = query.Where("hour = ?", *hour)
-	}
-	if minute != nil {
-		query = query.Where("minute = ?", *minute)
+	if time != nil {
+		if time.Hour != nil {
+			query = query.Where("hour = ?", *time.Hour)
+		}
+		if time.Minute != nil {
+			query = query.Where("minute = ?", *time.Minute)
+		}
 	}
 
 	var agendaEvents []dbModels.AgendaEvent
