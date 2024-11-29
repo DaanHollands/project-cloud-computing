@@ -1,6 +1,6 @@
 type AgendaEvent {
   id: ID!
-  userId: ID!
+  userId: Int!
   title: String!
   description: String
   year: Int!
@@ -12,13 +12,13 @@ type AgendaEvent {
 
 type Query {
   getAgenda(id: ID!): AgendaEvent
-  listAgendas(userId: ID!): [AgendaEvent!]!
-  getAgendasByDateTime(userId: ID!, year: Int!, month: Int!, day: Int!, hout: Int, minute: Int): [AgendaEvent!]!
+  listAgendas(userId: Int!): [AgendaEvent!]!
+  getAgendasByUserDateTime(userId: Int!, year: Int, month: Int, day: Int, hour: Int, minute: Int): [AgendaEvent!]!
 }
 
 type Mutation {
   createAgendaEvent(
-    userId: ID!
+    userId: Int!
     title: String!
     description: String
     year: Int!
@@ -29,7 +29,7 @@ type Mutation {
   ): AgendaEvent!
 
   updateAgendaEvent(
-    id: ID!
+    ID: Int!
     title: String
     description: String
     year: Int

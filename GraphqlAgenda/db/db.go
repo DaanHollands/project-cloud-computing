@@ -1,7 +1,7 @@
 package db
 
 import (
-	dbModels "agenda/db/Models"
+	dbModels "agenda/Models"
 	"log"
 
 	"gorm.io/driver/postgres"

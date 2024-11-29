@@ -4,14 +4,14 @@ package model
 
 type AgendaEvent struct {
 	ID          string  `json:"id"`
-	UserID      string  `json:"userId"`
+	UserID      int     `json:"userId"`
 	Title       string  `json:"title"`
 	Description *string `json:"description,omitempty"`
 	Year        int     `json:"year"`
 	Month       int     `json:"month"`
 	Day         int     `json:"day"`
-	Hour        int     `json:"hour"`
-	Minute      int     `json:"minute"`
+	Hour        *int    `json:"hour,omitempty"`
+	Minute      *int    `json:"minute,omitempty"`
 }
 
 type Mutation struct {
