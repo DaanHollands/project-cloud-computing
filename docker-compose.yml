@@ -6,7 +6,7 @@ services:
     build: 
       context: ./laravelWebsite
       dockerfile: ./dockerfile
-    image: localhost/laravel:latest
+    image: localhost/laravelWebsite:latest
     ports:
       - "8000:8000" # php artisan serve
       - "5173:5173" # npm run dev
@@ -23,7 +23,7 @@ services:
     build:
       context: ./SoapDotnet
       dockerfile: ./dockerfile
-    image: localhost/dotnet:latest
+    image: localhost/soapdotnet:latest
     ports:
       - "8001:5109"
     volumes:
@@ -38,11 +38,9 @@ services:
     build:
       context: ./GraphqlAgenda
       dockerfile: ./dockerfile
-    image: localhost/graphqlGo:image
+    image: localhost/graphqlgo:image
     ports:
       - "8002:8060"
-    volumes:
-      - ./GraphqlAgenda:/app:Z # For Development
     networks:
       - app-network
     depends_on:
@@ -53,7 +51,7 @@ services:
       build:
         context: ./postgresDatabase
         dockerfile: ./dockerfile
-      image: localhost/postgres:latest
+      image: localhost/postgresdb:latest
       environment:
         POSTGRES_USER: postgres
         POSTGRES_PASSWORD: postgres
