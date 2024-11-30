@@ -2,9 +2,11 @@ package be.kuleuven.restaurantapi.controller;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,6 +27,11 @@ public class ReservationController {
     @PostMapping
     public Reservation createReservation(Long tableId, Long userId, LocalDateTime dateTime, Integer duration, Integer numberOfPersons) {
         return service.createReservation(tableId, userId, dateTime, duration, numberOfPersons);
+    }
+
+    @GetMapping("/{id}")
+    public Optional<Reservation> findById(@PathVariable Long id) {
+        return service.findById(id);
     }
 
     @GetMapping("/table/{tableId}")

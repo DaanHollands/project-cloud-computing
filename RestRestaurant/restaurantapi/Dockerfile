@@ -8,6 +8,9 @@ WORKDIR /app
 COPY build.gradle settings.gradle gradlew /app/
 COPY gradle /app/gradle
 
+# Copy the source code
+COPY src /app/src
+
 # Download dependencies and build the application
 RUN ./gradlew build --no-daemon
 
@@ -18,7 +21,7 @@ FROM openjdk:17-jdk-slim
 WORKDIR /app
 
 # Copy the JAR file from the build stage
-COPY --from=build /app/build/libs/*.jar /app/app.jar
+COPY --from=build /app/build/libs/restaurantapi-0.0.1-SNAPSHOT.jar /app/app.jar
 
 # Expose the port the app will run on (default port for Spring Boot is 8080)
 EXPOSE 8080

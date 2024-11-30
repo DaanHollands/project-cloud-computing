@@ -20,5 +20,8 @@ sleep 5
 # Run the custom script to create multiple databases
 /docker-scripts/create-multiple-databases.sh
 
+# Create an indicator file once initialization is complete
+touch /tmp/postgres_initialized
+
 # Wait for the PostgreSQL process to keep it running in the foreground
 wait

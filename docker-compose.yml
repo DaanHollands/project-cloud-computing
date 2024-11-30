@@ -15,9 +15,12 @@ services:
     networks:
       - app-network
     depends_on:
-      - dotnet
-      - graphql
-      - mqttsensors
+      dotnet:
+        condition: service_started
+      graphql:
+        condition: service_started
+      mqttsensors:
+        condition: service_started
 
   dotnet:
     container_name: soap_dotnet
@@ -32,7 +35,9 @@ services:
     networks:
       - app-network
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+        restart: true
 
   graphql:
     container_name: graphql_go
@@ -45,7 +50,9 @@ services:
     networks:
       - app-network
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+        restart: true
 
   mqttsensors:
     container_name: mqtt_sensors
@@ -56,7 +63,8 @@ services:
     networks:
       - app-network
     depends_on:
-      - mqttbroker
+      mqttbroker:
+        condition: service_started
   
   mqttbroker:
     container_name: mqtt_broker
@@ -83,7 +91,9 @@ services:
     ports:
       - "8004:8080"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+        restart: true
 
   postgres:
       container_name: postgres
@@ -94,6 +104,7 @@ services:
       environment:
         POSTGRES_USER: postgres
         POSTGRES_PASSWORD: postgres
+        POSTGRES_DB: user_profile_database
         POSTGRES_MULTIPLE_DB: user_profile_database,laravel_user_database,graphql_agenda_database,rest_restaurant_database
       ports:
         - "5432:5432"
@@ -101,6 +112,13 @@ services:
         - postgres_data:/var/lib/postgresql/data # Persistent Data Storage
       networks:
       - app-network
+      healthcheck:
+        test: ["CMD-SHELL", "test -f /tmp/postgres_initialized"]
+        interval: 10s
+        retries: 5
+        start_period: 60s
+        timeout: 10s
+
 
   adminer:
     container_name: adminer
