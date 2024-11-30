@@ -1,14 +1,16 @@
 #ifndef BLOOD_PRESSURE_H
 #define BLOOD_PRESSURE_H
 
+#include <string>
+
 class BloodPressureSensor {
 public:
     BloodPressureSensor();
 
-    void initialize();
     void readData();
     int getSystolic() const;
     int getDiastolic() const;
+    std::string getMqttData();
 
 private:
     int systolic;

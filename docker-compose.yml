@@ -62,13 +62,15 @@ services:
     container_name: mqtt_broker
     image: docker.io/eclipse-mosquitto:latest
     volumes:
-      - "./MqttBroker/config/mosquitto.conf:/mosquitto/config/mosquitto.conf:Z"
+      - "./MqttBroker/config:/mosquitto/config:Z"
       - "./MqttBroker/data:/mosquitto/data:Z"
       - "./MqttBroker/log:/mosquitto/log:Z"
+      - "./MqttBroker/create_user.sh:/mosquitto/create_user.sh:Z"
     ports:
       - "8003:1883"
     networks:
       - app-network
+    entrypoint: ["/bin/sh", "/mosquitto/create_user.sh"]
 
   postgres:
       container_name: postgres

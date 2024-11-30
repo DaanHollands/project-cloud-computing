@@ -1,37 +1,48 @@
-# Use an official Ubuntu as a parent image
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 
-# Set environment variables to non-interactive
-ENV DEBIAN_FRONTEND=noninteractive
-
-# Install dependencies
+# Update en installeer benodigde tools
 RUN apt-get update && apt-get install -y \
-    cmake \
+    software-properties-common \
     g++ \
     make \
+    cmake \
+    libssl-dev \
+    mosquitto-clients \
+    doxygen \
     git \
-    && rm -rf /var/lib/apt/lists/*
+    wget \
+    pkg-config \
+    && apt-get clean
 
-# Create a working directory
+# Werkdirectory instellen
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
+# Installeer de Paho MQTT C library
+RUN git clone https://github.com/eclipse/paho.mqtt.c.git && \
+    cd paho.mqtt.c && \
+    cmake -DCMAKE_BUILD_TYPE=Release -DPAHO_WITH_SSL=ON . && \
+    make && make install && ldconfig && \
+    rm -rf /app/paho.mqtt.c
+
+# Installeer de Paho MQTT C++ library
+RUN git clone https://github.com/eclipse/paho.mqtt.cpp.git && \
+    cd paho.mqtt.cpp && \
+    cmake -DCMAKE_BUILD_TYPE=Release -DPAHO_BUILD_DOCUMENTATION=FALSE -DPAHO_BUILD_SAMPLES=FALSE . && \
+    make && make install && ldconfig && \
+    rm -rf /app/paho.mqtt.cpp
+
+# Zet de CMAKE_PREFIX_PATH voor CMake om libraries te vinden
+ENV CMAKE_PREFIX_PATH="/usr/local"
+
+# Kopieer de broncode in de container
 COPY . /app
 
-# Create a build directory
-RUN mkdir -p build
+# Voeg de cmake directory toe aan CMAKE_MODULE_PATH (optioneel)
+ENV CMAKE_MODULE_PATH="/app/cmake"
 
-# Set the working directory to the build directory
-WORKDIR /app/build
+# Configureer en bouw het project met CMake
+RUN cmake -S /app -B /app/build && \
+    cmake --build /app/build && \
+    ls -la /app/build
 
-# Run CMake to configure the project
-RUN cmake ..
-
-# Build the project
-RUN make
-
-# Set the working directory to the app directory
-WORKDIR /app
-
-# Command to run the executable
 CMD ["./build/MqttSensors"]

@@ -1,5 +1,6 @@
 #include "bloodPressureSensor.h"
 #include "rng.h"
+#include <sstream>
 
 BloodPressureSensor::BloodPressureSensor() : systolic(0), diastolic(0) 
 {
@@ -20,4 +21,12 @@ int BloodPressureSensor::getSystolic() const
 int BloodPressureSensor::getDiastolic() const 
 {
     return diastolic;
+}
+
+std::string BloodPressureSensor::getMqttData() 
+{
+    readData();
+    std::ostringstream oss;
+    oss << "{ \"systolic\": " << systolic << ", \"diastolic\": " << diastolic << " }";
+    return oss.str();
 }
