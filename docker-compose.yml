@@ -72,6 +72,19 @@ services:
       - app-network
     entrypoint: ["/bin/sh", "/mosquitto/create_user.sh"]
 
+  restaurant:
+    container_name: rest_restaurant
+    build:
+      context: ./RestRestaurant/restaurantapi
+      dockerfile: ./Dockerfile
+    image: localhost/restrestaurant:latest
+    networks:
+      - app-network
+    ports:
+      - "8004:8080"
+    depends_on:
+      - postgres
+
   postgres:
       container_name: postgres
       build:
