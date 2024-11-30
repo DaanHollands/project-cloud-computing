@@ -1,20 +1,20 @@
 Opdracht van de taak:
 
 Website voor een ziekenhuis
-    ==> inloggen (Laravel Breeze)
-    	==> profiel met gegevens (Soap)
-    	==> afgenomen foto's (REST)
-    	==> facturen (REST)
+    ==> inloggen
+    	==> profiel met gegevens
+    	==> afgenomen foto's
+    	==> facturen
 
     ==> vaccinaties service zelf maken
     	
     	
     ==> Tafels reserveren in de cafetaria of op het terras (a.d.h.v. het weer)
-    	==> externe weerapp (service)
+    	==> externe weerapp
         ==> aan de hand van een webserver
         ==> bestelling doorgeven
         
-    ==> agenda (GraphQL)
+    ==> agenda
     	==> Jaarlijkse afspraken bij de dokter    
         ==> Afspraken maken
 
@@ -25,6 +25,11 @@ Website voor een ziekenhuis
     ==> afsrpaken met andere mensen met dezelfde aandoeningen
     	==> afspreken aan de hand van zelfde soort operaties
 
-    ==> agenda linken aan Google Agenda (ics)
     
     
+SOAP        OK
+GraphQL     OK
+REST
+MQTT        OK
+gRPC
+Externe service
