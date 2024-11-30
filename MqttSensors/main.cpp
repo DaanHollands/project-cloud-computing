@@ -12,12 +12,8 @@ int main() {
     HumiditySensor humiditySensor;
     OxygenSensor oxygenSensor;
 
-    MqttClient client;  // Create client instance
-
-    // Connect to the MQTT broker asynchronously
+    MqttClient client;
     client.connect();  
-
-    // Start the client and enter consuming loop
     client.start();  
 
     // Infinite loop to send data

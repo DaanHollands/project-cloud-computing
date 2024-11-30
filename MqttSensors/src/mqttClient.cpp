@@ -1,12 +1,9 @@
 #include "mqttClient.h"
 #include <thread>
 
-MqttClient::MqttClient() : _client(SERVER_ADDRESS, CLIENT_ID) {
-    std::cout << "Client constructor called, awaiting connection...\n";
-}
+MqttClient::MqttClient() : _client(SERVER_ADDRESS, CLIENT_ID) {}
 
 MqttClient::~MqttClient() {
-    // Ensure proper disconnection
     try {
         _client.disconnect()->wait();
         std::cout << "Disconnected successfully!" << std::endl;
@@ -21,7 +18,6 @@ void MqttClient::connect() {
     conOpts.set_password(MQTT_PASSWD);
 
     try {
-        // Perform a synchronous connection
         _client.connect(conOpts)->wait();
         std::cout << "Connected successfully to the MQTT broker!" << std::endl;
     } catch (const mqtt::exception& e) {
@@ -33,8 +29,6 @@ void MqttClient::publishSensorData(const std::string &topic, const std::string &
     try {
         mqtt::message_ptr pubmsg = mqtt::make_message(topic, payload);
         pubmsg->set_qos(1);
-
-        // Publish the message asynchronously
         _client.publish(pubmsg);
         std::cout << "Data published: " << payload << std::endl;
     } catch (const mqtt::exception& e) {
@@ -44,14 +38,13 @@ void MqttClient::publishSensorData(const std::string &topic, const std::string &
 
 void MqttClient::start() {
     try {
-        // Start the consuming loop in a separate thread
         std::thread consuming_thread([this]() {
             _client.start_consuming();
             while (true) {
-                std::this_thread::sleep_for(std::chrono::seconds(1));  // Keeps program alive for event loop
+                std::this_thread::sleep_for(std::chrono::seconds(1));
             }
         });
-        consuming_thread.detach();  // Detach the thread to allow it to run independently
+        consuming_thread.detach();
     } catch (const mqtt::exception& e) {
         std::cerr << "Error in MQTT loop: " << e.what() << std::endl;
     }

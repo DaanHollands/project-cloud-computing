@@ -5,7 +5,7 @@ services:
     container_name: laravel
     build: 
       context: ./laravelWebsite
-      dockerfile: ./dockerfile
+      dockerfile: ./Dockerfile
     image: localhost/laravelwebsite:latest
     ports:
       - "8000:8000" # php artisan serve
@@ -23,12 +23,12 @@ services:
     container_name: soap_dotnet
     build:
       context: ./SoapDotnet
-      dockerfile: ./dockerfile
+      dockerfile: ./Dockerfile
     image: localhost/soapdotnet:latest
     ports:
       - "8001:5109"
-    volumes:
-      - ./SoapDotnet:/app:Z # For Development
+    # volumes:
+    #   - ./SoapDotnet:/app:Z # For Development
     networks:
       - app-network
     depends_on:
@@ -38,7 +38,7 @@ services:
     container_name: graphql_go
     build:
       context: ./GraphqlAgenda
-      dockerfile: ./dockerfile
+      dockerfile: ./Dockerfile
     image: localhost/graphqlgo:latest
     ports:
       - "8002:8060"
@@ -51,7 +51,7 @@ services:
     container_name: mqtt_sensors
     build:
       context: ./MqttSensors
-      dockerfile: ./dockerfile
+      dockerfile: ./Dockerfile
     image: localhost/mqttsensors:latest
     networks:
       - app-network
@@ -76,7 +76,7 @@ services:
       container_name: postgres
       build:
         context: ./postgresDatabase
-        dockerfile: ./dockerfile
+        dockerfile: ./Dockerfile
       image: localhost/postgresdb:latest
       environment:
         POSTGRES_USER: postgres

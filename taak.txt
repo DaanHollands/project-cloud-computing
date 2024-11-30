@@ -1,10 +1,10 @@
 Opdracht van de taak:
 
 Website voor een ziekenhuis
-    ==> inloggen
+    ==> inloggen (Laravel Breeze)
     	==> profiel met gegevens (Soap)
-    	==> afgenomen foto's
-    	==> facturen
+    	==> afgenomen foto's (REST)
+    	==> facturen (REST)
 
     ==> vaccinaties service zelf maken
     	
