@@ -3,7 +3,7 @@ FROM postgres:latest
 
 ENV POSTGRES_USER=postgres
 ENV POSTGRES_PASSWORD=postgres
-ENV POSTGRES_MULTIPLE_DB=user_profile_database,laravel_user_database,graphql_agenda_database
+ENV POSTGRES_MULTIPLE_DB=user_profile_database,laravel_user_database,graphql_agenda_database,rest_restaurant_database
 
 # Copy the script into the image
 COPY create-multiple-databases.sh /docker-scripts/create-multiple-databases.sh
