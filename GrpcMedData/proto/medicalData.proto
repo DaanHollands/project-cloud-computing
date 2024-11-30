@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+service MedicalDataService {
+    // Medical Records
+    rpc GetMedicalRecordById (GetByIdRequest) returns (MedicalRecordResponse);
+    rpc GetMedicalRecordsByUserId (GetByUserIdRequest) returns (MedicalRecordsListResponse);
+
+    // Invoices
+    rpc GetInvoiceById (GetByIdRequest) returns (InvoiceResponse);
+    rpc GetInvoicesByUserId (GetByUserIdRequest) returns (InvoicesListResponse);
+}
+
+message GetByIdRequest {
+    int64 id = 1; 
+}
+
+message GetByUserIdRequest {
+    int64 userId = 1;
+}
+
+// Medical Record
+message MedicalRecordResponse {
+    int64 id = 1;
+    string title = 2;
+    int64 userId = 3;
+    int64 doctorId = 4;
+    string imageUrl = 5;
+}
+
+message MedicalRecordsListResponse {
+    repeated MedicalRecordResponse records = 1;
+}
+
+// Invoice
+message InvoiceResponse {
+    int64 id = 1;
+    string title = 2;
+    int64 userId = 3;
+    string imageUrl = 4;
+    bool isPaid = 5;
+}
+
+message InvoicesListResponse {
+    repeated InvoiceResponse invoices = 1;
+}

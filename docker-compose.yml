@@ -21,6 +21,10 @@ services:
         condition: service_started
       mqttsensors:
         condition: service_started
+      restaurant:
+        condition: service_started
+      medicaldata:
+        condition: service_started
 
   dotnet:
     container_name: soap_dotnet
@@ -95,6 +99,22 @@ services:
         condition: service_healthy
         restart: true
 
+  medicaldata:
+    container_name: grpc_medical_data
+    build:
+      context: ./GrpcMedData
+      dockerfile: ./Dockerfile
+    image: localhost/grpcmedicaldata:latest
+    networks:
+      - app-network
+    ports:
+      - "8005:50051"
+    depends_on:
+      postgres:
+        condition: service_healthy
+        restart: true
+
+
   postgres:
       container_name: postgres
       build:
@@ -105,7 +125,7 @@ services:
         POSTGRES_USER: postgres
         POSTGRES_PASSWORD: postgres
         POSTGRES_DB: user_profile_database
-        POSTGRES_MULTIPLE_DB: user_profile_database,laravel_user_database,graphql_agenda_database,rest_restaurant_database
+        POSTGRES_MULTIPLE_DB: user_profile_database,laravel_user_database,graphql_agenda_database,rest_restaurant_database,grpc_meddata_database
       ports:
         - "5432:5432"
       volumes:
