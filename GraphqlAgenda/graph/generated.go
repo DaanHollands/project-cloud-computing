@@ -72,7 +72,7 @@ type ComplexityRoot struct {
 
 	Query struct {
 		GetAgenda       func(childComplexity int, id string) int
-		GetAgendaEvents func(childComplexity int, userID int, date *model.DateInput, time *model.TimeInput) int
+		GetAgendaEvents func(childComplexity int, userID int, fromDate model.DateInput, toDate model.DateInput) int
 		ListAgendas     func(childComplexity int, userID int) int
 	}
 
@@ -90,7 +90,7 @@ type MutationResolver interface {
 type QueryResolver interface {
 	GetAgenda(ctx context.Context, id string) (*model.AgendaEvent, error)
 	ListAgendas(ctx context.Context, userID int) ([]*model.AgendaEvent, error)
-	GetAgendaEvents(ctx context.Context, userID int, date *model.DateInput, time *model.TimeInput) ([]*model.AgendaEvent, error)
+	GetAgendaEvents(ctx context.Context, userID int, fromDate model.DateInput, toDate model.DateInput) ([]*model.AgendaEvent, error)
 }
 
 type executableSchema struct {
@@ -247,7 +247,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.GetAgendaEvents(childComplexity, args["userId"].(int), args["date"].(*model.DateInput), args["time"].(*model.TimeInput)), true
+		return e.complexity.Query.GetAgendaEvents(childComplexity, args["userId"].(int), args["fromDate"].(model.DateInput), args["toDate"].(model.DateInput)), true
 
 	case "Query.listAgendas":
 		if e.complexity.Query.ListAgendas == nil {
@@ -701,16 +701,16 @@ func (ec *executionContext) field_Query_getAgendaEvents_args(ctx context.Context
 		return nil, err
 	}
 	args["userId"] = arg0
-	arg1, err := ec.field_Query_getAgendaEvents_argsDate(ctx, rawArgs)
+	arg1, err := ec.field_Query_getAgendaEvents_argsFromDate(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["date"] = arg1
-	arg2, err := ec.field_Query_getAgendaEvents_argsTime(ctx, rawArgs)
+	args["fromDate"] = arg1
+	arg2, err := ec.field_Query_getAgendaEvents_argsToDate(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["time"] = arg2
+	args["toDate"] = arg2
 	return args, nil
 }
 func (ec *executionContext) field_Query_getAgendaEvents_argsUserID(
@@ -726,29 +726,29 @@ func (ec *executionContext) field_Query_getAgendaEvents_argsUserID(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_getAgendaEvents_argsDate(
+func (ec *executionContext) field_Query_getAgendaEvents_argsFromDate(
 	ctx context.Context,
 	rawArgs map[string]interface{},
-) (*model.DateInput, error) {
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("date"))
-	if tmp, ok := rawArgs["date"]; ok {
-		return ec.unmarshalODateInput2ᚖagendaᚋgraphᚋmodelᚐDateInput(ctx, tmp)
+) (model.DateInput, error) {
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("fromDate"))
+	if tmp, ok := rawArgs["fromDate"]; ok {
+		return ec.unmarshalNDateInput2agendaᚋgraphᚋmodelᚐDateInput(ctx, tmp)
 	}
 
-	var zeroVal *model.DateInput
+	var zeroVal model.DateInput
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_getAgendaEvents_argsTime(
+func (ec *executionContext) field_Query_getAgendaEvents_argsToDate(
 	ctx context.Context,
 	rawArgs map[string]interface{},
-) (*model.TimeInput, error) {
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("time"))
-	if tmp, ok := rawArgs["time"]; ok {
-		return ec.unmarshalOTimeInput2ᚖagendaᚋgraphᚋmodelᚐTimeInput(ctx, tmp)
+) (model.DateInput, error) {
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("toDate"))
+	if tmp, ok := rawArgs["toDate"]; ok {
+		return ec.unmarshalNDateInput2agendaᚋgraphᚋmodelᚐDateInput(ctx, tmp)
 	}
 
-	var zeroVal *model.TimeInput
+	var zeroVal model.DateInput
 	return zeroVal, nil
 }
 
@@ -1711,7 +1711,7 @@ func (ec *executionContext) _Query_getAgendaEvents(ctx context.Context, field gr
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetAgendaEvents(rctx, fc.Args["userId"].(int), fc.Args["date"].(*model.DateInput), fc.Args["time"].(*model.TimeInput))
+		return ec.resolvers.Query().GetAgendaEvents(rctx, fc.Args["userId"].(int), fc.Args["fromDate"].(model.DateInput), fc.Args["toDate"].(model.DateInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4665,6 +4665,11 @@ func (ec *executionContext) marshalNDate2ᚖagendaᚋgraphᚋmodelᚐDate(ctx co
 		return graphql.Null
 	}
 	return ec._Date(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNDateInput2agendaᚋgraphᚋmodelᚐDateInput(ctx context.Context, v interface{}) (model.DateInput, error) {
+	res, err := ec.unmarshalInputDateInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalNDateInputRequired2agendaᚋgraphᚋmodelᚐDateInputRequired(ctx context.Context, v interface{}) (model.DateInputRequired, error) {

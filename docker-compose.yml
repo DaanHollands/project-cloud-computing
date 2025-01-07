@@ -69,6 +69,7 @@ services:
     depends_on:
       mqttbroker:
         condition: service_started
+        restart: true
   
   mqttbroker:
     container_name: mqtt_broker
@@ -129,20 +130,20 @@ services:
       ports:
         - "5432:5432"
       volumes:
-        - postgres_data:/var/lib/postgresql/data # Persistent Data Storage
+        - postgres_data:/var/lib/postgresql/data:Z # Persistent Data Storage
       networks:
       - app-network
       healthcheck:
         test: ["CMD-SHELL", "test -f /tmp/postgres_initialized"]
         interval: 10s
-        retries: 5
-        start_period: 60s
+        retries: 10
+        start_period: 180s
         timeout: 10s
 
 
   adminer:
     container_name: adminer
-    image: adminer
+    image: docker.io/adminer:latest
     restart: always
     ports:
       - "8080:8080"

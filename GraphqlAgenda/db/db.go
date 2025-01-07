@@ -12,7 +12,7 @@ import (
 var DB *gorm.DB
 
 func ConnectDataBase() {
-	dsn := "host=localhost user=postgres password=postgres dbname=graphql_agenda_database port=5432 sslmode=disable TimeZone=UTC" //Connect to postgres database inside docker
+	dsn := "host=postgres user=postgres password=postgres dbname=graphql_agenda_database port=5432 sslmode=disable TimeZone=UTC" //Connect to postgres database inside docker
 	var err error
 
 	time.Sleep(5 * time.Second) // Wacht op database

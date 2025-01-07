@@ -125,30 +125,11 @@ func (r *queryResolver) ListAgendas(ctx context.Context, userID int) ([]*model.A
 }
 
 // GetAgendaEvents is the resolver for the getAgendaEvents field.
-func (r *queryResolver) GetAgendaEvents(ctx context.Context, userID int, date *model.DateInput, time *model.TimeInput) ([]*model.AgendaEvent, error) {
-	query := r.DB.Where("user_id = ?", userID)
-	if date != nil {
-		if date.Year != nil {
-			query = query.Where("year = ?", *date.Year)
-		}
-		if date.Month != nil {
-			query = query.Where("month = ?", *date.Month)
-		}
-		if date.Day != nil {
-			query = query.Where("day = ?", *date.Day)
-		}
-	}
-	if time != nil {
-		if time.Hour != nil {
-			query = query.Where("hour = ?", *time.Hour)
-		}
-		if time.Minute != nil {
-			query = query.Where("minute = ?", *time.Minute)
-		}
-	}
-
+func (r *queryResolver) GetAgendaEvents(ctx context.Context, userID int, fromDate model.DateInput, toDate model.DateInput) ([]*model.AgendaEvent, error) {
 	var agendaEvents []dbModels.AgendaEvent
-	if err := query.Find(&agendaEvents).Error; err != nil {
+
+	// Filter events within the date bounds
+	if err := r.DB.Where("date >= ? AND date <= ?", fromDate, toDate).Find(&agendaEvents).Error; err != nil {
 		return nil, fmt.Errorf("failed to find events: %v", err)
 	}
 

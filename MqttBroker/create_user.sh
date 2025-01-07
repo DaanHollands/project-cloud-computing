@@ -8,13 +8,13 @@ PASSWORD="Ssy0MpLdMIdXtau"
 if [ -f "$PASSWD_FILE" ]; then
     if ! grep -q "^$USERNAME:" "$PASSWD_FILE"; then
         echo "Adding user $USERNAME."
-        mosquitto_passwd -b "$PASSWD_FILE" "$USERNAME" "$PASSWORD"
+        sudo mosquitto_passwd -b "$PASSWD_FILE" "$USERNAME" "$PASSWORD"
     else
         echo "User $USERNAME already exists."
     fi
 else
     echo "Creating password file and adding user $USERNAME."
-    mosquitto_passwd -c -b "$PASSWD_FILE" "$USERNAME" "$PASSWORD"
+    sudo mosquitto_passwd -c -b "$PASSWD_FILE" "$USERNAME" "$PASSWORD"
 fi
 
 # Start the Mosquitto broker

@@ -1,5 +1,5 @@
 # Stage 1: Build
-FROM golang:1.23 AS builder
+FROM docker.io/golang:1.23 AS builder
 
 # Set the working directory
 WORKDIR /app
@@ -15,7 +15,7 @@ COPY . .
 RUN go build -o server ./main/server.go
 
 # Stage 2: Run
-FROM golang:1.23
+FROM docker.io/golang:1.23
 
 # Set the working directory in the final image
 WORKDIR /app

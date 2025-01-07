@@ -1,5 +1,5 @@
 # Stage 1: Build
-FROM gradle:8.11-jdk17 AS build
+FROM docker.io/gradle:8.11-jdk17 AS build
 
 # Set working directory
 WORKDIR /app
@@ -15,7 +15,7 @@ COPY src /app/src
 RUN ./gradlew build --no-daemon
 
 # Stage 2: Runtime
-FROM openjdk:17-jdk-slim
+FROM docker.io/openjdk:17-jdk-slim
 
 # Set working directory for runtime
 WORKDIR /app

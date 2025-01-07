@@ -3,7 +3,7 @@ package be.kuleuven.restaurantapi.services;
 import be.kuleuven.restaurantapi.model.Reservation;
 import be.kuleuven.restaurantapi.repositories.ReservationRepository;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,7 +19,7 @@ public class ReservationService {
         this.repo = repo;
     }
 
-    public Reservation createReservation(Long tableId, Long userId, LocalDateTime dateTime, Integer duration, Integer numberOfPersons) {
+    public Reservation createReservation(Long tableId, Long userId, ZonedDateTime dateTime, Integer duration, Integer numberOfPersons) {
         Reservation reservation = new Reservation();
         reservation.setTableId(tableId);
         reservation.setUserId(userId);
@@ -37,7 +37,7 @@ public class ReservationService {
         return repo.findByTableId(tableId);
     };
 
-    public List<Reservation> findByTableIdAndDateTime(Long tableId, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+    public List<Reservation> findByTableIdAndDateTime(Long tableId, ZonedDateTime startDateTime, ZonedDateTime endDateTime) {
         return repo.findByTableIdAndDateTimeBetween(tableId, startDateTime, endDateTime);
     };
 }

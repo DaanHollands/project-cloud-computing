@@ -1,6 +1,6 @@
 package be.kuleuven.restaurantapi.controller;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,7 +25,7 @@ public class ReservationController {
     }
 
     @PostMapping
-    public Reservation createReservation(Long tableId, Long userId, LocalDateTime dateTime, Integer duration, Integer numberOfPersons) {
+    public Reservation createReservation(Long tableId, Long userId, ZonedDateTime dateTime, Integer duration, Integer numberOfPersons) {
         return service.createReservation(tableId, userId, dateTime, duration, numberOfPersons);
     }
 
@@ -35,12 +35,12 @@ public class ReservationController {
     }
 
     @GetMapping("/table/{tableId}")
-    public List<Reservation> findByTableId(Long tableId) {
+    public List<Reservation> findByTableId(@PathVariable Long tableId) {
         return service.findByTableId(tableId);
     }
 
     @GetMapping("/table/{tableId}/dateTime")
-    public List<Reservation> findByTableIdAndDateTime(Long tableId, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+    public List<Reservation> findByTableIdAndDateTime(@PathVariable Long tableId, ZonedDateTime startDateTime, ZonedDateTime endDateTime) {
         return service.findByTableIdAndDateTime(tableId, startDateTime, endDateTime);
     }
 }

@@ -9,8 +9,12 @@ class UserInfoController extends Controller
 {
     public function get()
     {
-        return view('profile.setData');
+        $userEmail = auth()->user()->email;
+        $userData = SoapService::getUserByEmail($userEmail);
+
+        return view('profile.setData', ['userData' => $userData]);
     }
+
 
     public function store(Request $request)
     {

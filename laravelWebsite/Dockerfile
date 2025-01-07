@@ -17,6 +17,7 @@ RUN apt-get update && apt-get install -y \
     nodejs \
     npm \
     libpq-dev \
+    protobuf-compiler \
     && docker-php-ext-install pgsql pdo_pgsql soap xml curl
 
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"

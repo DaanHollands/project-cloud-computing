@@ -27,15 +27,14 @@ class UserInfo
         if($params === null){
             return false;
         }
-        $names = explode(' ', $params['FullName']);
-        $this->firstName = $names[0];
-        $this->lastName = $params[1];
+        $this->firstName = $params['FirstName'];
+        $this->lastName = $params['LastName'];
         $this->email = $params['Email'];
         $this->birthDate = $params['BirthDate'];
-        $this->postalCode = $params['PostalCode'];
-        $this->street = $params['Street'];
-        $this->houseNumber = $params['HouseNumber'];
-        $this->country = $params['Country'];
+        $this->postalCode = $params['Address']['PostalCode'];
+        $this->street = $params['Address']['Street'];
+        $this->houseNumber = $params['Address']['HouseNumber'];
+        $this->country = $params['Address']['Country'];
         $this->phoneNumber = $params['PhoneNumber'];
         return true;
     }

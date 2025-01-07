@@ -1,6 +1,6 @@
 package be.kuleuven.restaurantapi.model;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,7 +16,7 @@ public class Reservation {
     private Long tableId;
     private Long userId;
     
-    private LocalDateTime dateTime;
+    private ZonedDateTime dateTime;
     private Integer duration;
     private Integer numberOfPersons;
 
@@ -47,12 +47,12 @@ public class Reservation {
         this.userId = userId;
     }
 
-    public LocalDateTime getDateTime() {
+    public ZonedDateTime getDateTime() {
         return dateTime;
     }
 
-    public void setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
+    public void setDateTime(ZonedDateTime dateTime2) {
+        this.dateTime = dateTime2;
     }
 
     public Integer getDuration() {

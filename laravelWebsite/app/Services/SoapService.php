@@ -95,16 +95,33 @@ class SoapService
         return $response->SetPhoneNumberResult;
     }
 
-    public static function getUserByEmail(string $email) : ?array
+    public static function test()
     {
-        if(self::$client == null) {
+
+    }
+    public static function getUserByEmail(string $email): ?array
+    {
+        if (self::$client === null) {
             self::initialize();
         }
         $parameters = [
-            'Email' => $email
+            'Email' => $email,
         ];
         $response = self::callMethod("GetUserByEmail", $parameters);
-        return $response->GetUserByEmailResult;
+
+        if (!isset($response->GetUserByEmailResult)) {
+            return null;
+        }
+
+        // Convert top-level object to array
+        $user = (array)$response->GetUserByEmailResult;
+
+        // Check and convert the Address field if it exists and is an object
+        if (isset($user['Address']) && is_object($user['Address'])) {
+            $user['Address'] = (array)$user['Address'];
+        }
+
+        return $user;
     }
 
     public static function deleteProfile(string $email) : bool

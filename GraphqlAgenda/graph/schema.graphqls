@@ -53,8 +53,8 @@ type Query {
 
   getAgendaEvents(
     userId: Int! 
-    date: DateInput
-    time: TimeInput
+    fromDate: DateInput!
+    toDate: DateInput!
   ): [AgendaEvent!]!
 }
 
