@@ -1,7 +1,7 @@
 <?php
 // GENERATED CODE -- DO NOT EDIT!
 
-namespace ;
+namespace App\grpc;
 
 /**
  */
@@ -23,7 +23,7 @@ class MedicalDataServiceClient extends \Grpc\BaseStub {
      * @param array $options call options
      * @return \Grpc\UnaryCall
      */
-    public function GetMedicalRecordById(\GetByIdRequest $argument,
+    public function GetMedicalRecordById(\App\grpc\GetByIdRequest $argument,
       $metadata = [], $options = []) {
         return $this->_simpleRequest('/MedicalDataService/GetMedicalRecordById',
         $argument,
@@ -37,7 +37,7 @@ class MedicalDataServiceClient extends \Grpc\BaseStub {
      * @param array $options call options
      * @return \Grpc\UnaryCall
      */
-    public function GetMedicalRecordsByUserId(\GetByUserIdRequest $argument,
+    public function GetMedicalRecordsByUserId(\App\grpc\GetByUserIdRequest $argument,
       $metadata = [], $options = []) {
         return $this->_simpleRequest('/MedicalDataService/GetMedicalRecordsByUserId',
         $argument,
@@ -52,7 +52,7 @@ class MedicalDataServiceClient extends \Grpc\BaseStub {
      * @param array $options call options
      * @return \Grpc\UnaryCall
      */
-    public function GetInvoiceById(\GetByIdRequest $argument,
+    public function GetInvoiceById(\App\grpc\GetByIdRequest $argument,
       $metadata = [], $options = []) {
         return $this->_simpleRequest('/MedicalDataService/GetInvoiceById',
         $argument,
@@ -66,7 +66,7 @@ class MedicalDataServiceClient extends \Grpc\BaseStub {
      * @param array $options call options
      * @return \Grpc\UnaryCall
      */
-    public function GetInvoicesByUserId(\GetByUserIdRequest $argument,
+    public function GetInvoicesByUserId(\App\grpc\GetByUserIdRequest $argument,
       $metadata = [], $options = []) {
         return $this->_simpleRequest('/MedicalDataService/GetInvoicesByUserId',
         $argument,

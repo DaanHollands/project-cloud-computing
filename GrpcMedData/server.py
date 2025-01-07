@@ -1,3 +1,4 @@
+import logging
 import grpc
 from grpc_reflection.v1alpha import reflection
 from contextlib import contextmanager
@@ -30,6 +31,7 @@ class MedicalDataServiceServicer(medicalData_pb2_grpc.MedicalDataServiceServicer
             db.close()
     
     def GetMedicalRecordById(self, request, context):
+        print('GetMedicalRecordByID')
         with self._get_session() as session:
             record = session.query(MedicalRecord).filter(MedicalRecord.id == request.id).first()
             if record:
@@ -46,6 +48,7 @@ class MedicalDataServiceServicer(medicalData_pb2_grpc.MedicalDataServiceServicer
                 return medicalData_pb2.MedicalRecordResponse()
     
     def GetMedicalRecordsByUserId(self, request, context):
+        print('GetMedicalRecordByUserID')
         with self._get_session() as session:
             records = session.query(MedicalRecord).filter(MedicalRecord.user_id == request.userId).all()
             return medicalData_pb2.MedicalRecordListResponse(
@@ -57,6 +60,7 @@ class MedicalDataServiceServicer(medicalData_pb2_grpc.MedicalDataServiceServicer
                         ) for rec in records])
 
     def GetInvoiceById(self, request, context):
+        print('GetInvoiceByID')
         with self._get_session() as session:
             invoice = session.query(Invoice).filter(Invoice.id == request.id).first()
             if invoice:
@@ -72,6 +76,7 @@ class MedicalDataServiceServicer(medicalData_pb2_grpc.MedicalDataServiceServicer
                 return medicalData_pb2.InvoiceResponse()
 
     def GetInvoicesByUserId(self, request, context):
+        print('GetInvoiceByUserID')
         with self._get_session() as session:
             invoices = session.query(Invoice).filter(Invoice.user_id == request.userId).all()
             return medicalData_pb2.InvoiceListResponse(
@@ -85,12 +90,15 @@ class MedicalDataServiceServicer(medicalData_pb2_grpc.MedicalDataServiceServicer
 
 def run_migrations():
     """Run Alembic migrations programmatically."""
+    logging.basicConfig(level=logging.INFO)
     print("Applying database migrations...")
-    alembic_cfg = alembic.config.Config("alembic.ini")
-    alembic_args = ['upgrade', 'head']
-    
-    alembic.command.upgrade(alembic_cfg, alembic_args[1])
-    print("Migrations applied successfully.")
+    try:
+        alembic_cfg = alembic.config.Config("alembic.ini")
+        alembic.command.upgrade(alembic_cfg, 'head')
+        print("Migrations applied successfully.")
+    except Exception as e:
+        print(f"Error applying migrations: {e}")
+
 
 def serve():
     # run the migrations

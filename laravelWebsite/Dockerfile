@@ -20,6 +20,12 @@ RUN apt-get update && apt-get install -y \
     protobuf-compiler \
     && docker-php-ext-install pgsql pdo_pgsql soap xml curl
 
+# Install gRPC and PHP dependencies
+RUN apt-get install -y \
+    libgrpc-dev \
+    && pecl install grpc \
+    && docker-php-ext-enable grpc
+
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
 # Install Composer

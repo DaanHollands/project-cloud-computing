@@ -17,4 +17,4 @@ RUN . venv/bin/activate && pip install --no-cache-dir -r requirements.txt
 EXPOSE 50051
 
 # Run server.py when the container launches
-CMD ["/bin/bash", "-c", ". venv/bin/activate && python server.py"]
+CMD ["venv/bin/python", "-u", "server.py"]

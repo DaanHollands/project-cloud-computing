@@ -105,6 +105,8 @@ services:
     build:
       context: ./GrpcMedData
       dockerfile: ./Dockerfile
+    environment:
+        - PYTHONUNBUFFERED=1
     image: localhost/grpcmedicaldata:latest
     networks:
       - app-network
