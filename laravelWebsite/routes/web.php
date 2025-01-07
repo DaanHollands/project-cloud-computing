@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\SensorsController;
 use App\Http\Controllers\UserInfoController;
+use App\Http\Controllers\AgendaController;
 use App\Models\UserInfo;
 use Illuminate\Support\Facades\Route;
 
@@ -26,14 +27,21 @@ Route::post('/profile', [UserInfoController::class, 'store'])
     ->name('profile');
 
 
-//TODO
-Route::get('/agenda', function () {
-    return view('agenda');
-})
-->middleware(['auth'])
-->name('agenda');
+//Agenda
+Route::get('/agenda', [AgendaController::class, 'index'])
+    ->middleware(['auth'])
+    ->name('agenda.index');
+Route::get('/agenda/create', [AgendaController::class, 'create'])
+    ->middleware(['auth'])
+    ->name('agenda.create');
+Route::get('/agenda/{id}', [AgendaController::class, 'show'])
+    ->middleware(['auth'])
+    ->name('agenda.show');
+Route::post('/agenda', [AgendaController::class, 'store'])
+    ->middleware(['auth'])
+    ->name('agenda.store');
 
-
+    
 //Restaurant
 Route::get('/restaurant', [RestaurantController::class, 'index'])
     ->middleware(['auth'])
@@ -59,7 +67,7 @@ Route::post('/restaurant/{id}/store', [RestaurantController::class, 'store'])
 //TODO
 Route::get('/meddata', [MedicalDataController::class, 'index'])
     ->middleware(['auth'])
-    ->name('meddata');
+    ->name('meddata.index');
 
 
 //Hospital Sensors
