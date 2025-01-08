@@ -1,6 +1,5 @@
 <?php
 
-use App\grpc\GPBMetadata\App\Grpc\MedicalData;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MedicalDataController;
 use App\Http\Controllers\ProfileController;
@@ -12,7 +11,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('welcome');
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
@@ -79,6 +78,7 @@ Route::get('/meddata/record/{id}', [MedicalDataController::class, 'show_record']
 Route::get('/meddata/invoice/{id}', [MedicalDataController::class, 'show_invoice'])
     ->middleware(['auth'])
     ->name('meddata.invoice.show');   
+
 
 //Hospital Sensors
 Route::get('/sensors', [SensorsController::class, 'index'])

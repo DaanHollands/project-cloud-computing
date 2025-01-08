@@ -6,8 +6,6 @@ use Illuminate\Support\Facades\Log;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 
-use function Illuminate\Log\log;
-
 class AgendaService
 {
     private $client;
@@ -33,7 +31,7 @@ class AgendaService
             $response_data = json_decode($response->getBody()->getContents(), true);
 
             if (isset($responseData['errors'])) {
-                throw new \Exception(json_encode($response_Data['errors']));
+                throw new \Exception(json_encode($response_data['errors']));
             }
 
             if (isset($response_data['data'])) {

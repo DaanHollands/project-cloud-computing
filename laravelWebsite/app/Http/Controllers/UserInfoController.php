@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\UserInfo;
 use App\Services\SoapService;
 use Illuminate\Http\Request;
 

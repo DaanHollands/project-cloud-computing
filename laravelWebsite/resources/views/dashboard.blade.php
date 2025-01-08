@@ -5,22 +5,26 @@
         </h2>
     </x-slot>
 
+
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    {{ __("You're logged in!") }}
-                    @isset($weather)
-                    <div class="mt-4">
-                        <h3 class="text-lg font-semibold">Current Weather in Temse, Belgium</h3>
-                        <p>Temperature: {{ $weather['main']['temp'] }}°C</p>
-                        <p>Condition: {{ $weather['weather'][0]['description'] }}</p>
-                        <p>Humidity: {{ $weather['main']['humidity'] }}%</p>
-                        <p>Wind Speed: {{ $weather['wind']['speed'] }} m/s</p>
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 bg-white border-b border-gray-200">
+                    <div class="p-6 text-gray-900">
+                        {{ __("You're logged in!") }}
+                        @isset($weather)
+                        <div class="mt-4 text-gray-600">
+                            <h3 class="text-gray-600 font-semibold">Current Weather in Zaventem, Belgium</h3>
+                            <p>Temperature: {{ $weather->main->temp }}°C</p>
+                            <p>Condition: {{ $weather->weather[0]->description }}</p>
+                            <p>Humidity: {{ $weather->main->humidity }}%</p>
+                            <p>Wind Speed: {{ $weather->wind->speed }} m/s</p>
+                        </div>
+                        @endisset
                     </div>
-                    @endisset
                 </div>
             </div>
         </div>
     </div>
+
 </x-app-layout>

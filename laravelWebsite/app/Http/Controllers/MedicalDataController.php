@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\MedDataService;
-use Illuminate\Support\Facades\Auth;
 
 class MedicalDataController extends Controller
 {
@@ -21,19 +19,21 @@ class MedicalDataController extends Controller
         $recordsResponse = $this->service->getMedicalRecordsByUserId($id);
         $invoicesResponse = $this->service->getInvoicesByUserId($id);
 
-        $records = $recordsResponse ? $recordsResponse->getRecords() : null;
-        $invoices = $invoicesResponse ? $invoicesResponse->getInvoices() : null;
-
+        $records = $recordsResponse ? collect($recordsResponse->getRecords()) : collect([]);
+        $invoices = $invoicesResponse ? collect($invoicesResponse->getInvoices()) : collect([]);
+        // dd($records, $invoices);
         return view('medicaldata.index', compact('records', 'invoices'));
     }
 
     public function show_record($id)
     {
         $record = $this->service->getMedicalRecordById($id);
+        return view('medicaldata.record', compact('record'));
     }
 
     public function show_invoice($id)
     {
         $invoice = $this->service->getInvoiceById($id);
+        return view('medicaldata.invoice', compact('invoice'));
     }
 }

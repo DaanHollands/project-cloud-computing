@@ -3,11 +3,6 @@
 namespace App\Models;
 
 use App\Services\SoapService;
-use http\Env\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
-use SoapClient;
-use SoapFault;
 
 class UserInfo
 {
