@@ -69,13 +69,16 @@ Route::post('/restaurant/{id}/store', [RestaurantController::class, 'store'])
     ->name('restaurant.store');
 
 
-//TODO
+//Medical Recors & Invoices
 Route::get('/meddata', [MedicalDataController::class, 'index'])
     ->middleware(['auth'])
     ->name('meddata.index');
-Route::get('/meddata/test', [MedicalDataController::class, 'test'])
+Route::get('/meddata/record/{id}', [MedicalDataController::class, 'show_record'])
     ->middleware(['auth'])
-    ->name('meddata.test');
+    ->name('meddata.record.show');
+Route::get('/meddata/invoice/{id}', [MedicalDataController::class, 'show_invoice'])
+    ->middleware(['auth'])
+    ->name('meddata.invoice.show');   
 
 //Hospital Sensors
 Route::get('/sensors', [SensorsController::class, 'index'])

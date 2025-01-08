@@ -38,8 +38,8 @@ class MedicalDataServiceServicer(medicalData_pb2_grpc.MedicalDataServiceServicer
                 return medicalData_pb2.MedicalRecordResponse(
                         id=record.id,
                         title=record.title,
-                        userId=record.userId,
-                        doctorId=record.doctorId,
+                        userId=record.userid,
+                        doctorId=record.doctorid,
                         imageUrl=record.imageUrl
                     )
             else:
@@ -50,13 +50,20 @@ class MedicalDataServiceServicer(medicalData_pb2_grpc.MedicalDataServiceServicer
     def GetMedicalRecordsByUserId(self, request, context):
         print('GetMedicalRecordByUserID')
         with self._get_session() as session:
-            records = session.query(MedicalRecord).filter(MedicalRecord.user_id == request.userId).all()
-            return medicalData_pb2.MedicalRecordListResponse(
+            records = session.query(MedicalRecord).filter(MedicalRecord.userid == request.userId).all()
+            
+            if not records:
+                context.set_code(grpc.StatusCode.NOT_FOUND)
+                context.set_details("Records not found.")
+                return medicalData_pb2.MedicalRecordsListResponse()
+            
+            return medicalData_pb2.MedicalRecordsListResponse(
                 records=[medicalData_pb2.MedicalRecordResponse(
                             id=rec.id, 
-                            userId=rec.user_id, 
-                            octorId=rec.doctor_id, 
-                            imageUrl=rec.image_url
+                            title=rec.title,
+                            userId=rec.userid, 
+                            doctorId=rec.doctorid, 
+                            imageUrl=rec.imageUrl
                         ) for rec in records])
 
     def GetInvoiceById(self, request, context):
@@ -66,9 +73,10 @@ class MedicalDataServiceServicer(medicalData_pb2_grpc.MedicalDataServiceServicer
             if invoice:
                 return medicalData_pb2.InvoiceResponse(
                         id=invoice.id, 
-                        userId=invoice.user_id, 
-                        imageUrl=invoice.image_url, 
-                        isPaid=invoice.is_paid
+                        title=invoice.title,
+                        userId=invoice.userid, 
+                        imageUrl=invoice.imageUrl, 
+                        isPaid=invoice.ispaid
                     )
             else:
                 context.set_code(grpc.StatusCode.NOT_FOUND)
@@ -78,13 +86,20 @@ class MedicalDataServiceServicer(medicalData_pb2_grpc.MedicalDataServiceServicer
     def GetInvoicesByUserId(self, request, context):
         print('GetInvoiceByUserID')
         with self._get_session() as session:
-            invoices = session.query(Invoice).filter(Invoice.user_id == request.userId).all()
-            return medicalData_pb2.InvoiceListResponse(
+            invoices = session.query(Invoice).filter(Invoice.userid == request.userId).all()
+            
+            if not invoices:
+                context.set_code(grpc.StatusCode.NOT_FOUND)
+                context.set_details("Invoices not found.")
+                return medicalData_pb2.InvoicesListResponse()
+            
+            return medicalData_pb2.InvoicesListResponse(
                 invoices=[medicalData_pb2.InvoiceResponse(
-                            id=inv.id, 
-                            userId=inv.user_id, 
-                            imageUrl=inv.image_url, 
-                            isPaid=inv.is_paid
+                            id=inv.id,
+                            title=inv.title, 
+                            userId=inv.userid, 
+                            imageUrl=inv.imageUrl, 
+                            isPaid=inv.ispaid
                         ) for inv in invoices])
 
 

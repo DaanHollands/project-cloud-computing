@@ -12,6 +12,7 @@
         "laravel/framework": "^11.9",
         "laravel/tinker": "^2.9",
         "php-mqtt/client": "^2.2",
+        "phpseclib/bcmath_compat": "^2.0",
         "rakibdevs/openweather-laravel-api": "^1.9"
     },
     "require-dev": {
@@ -27,7 +28,8 @@
     "autoload": {
         "psr-4": {
             "App\\": "app/",
-            "App\\grpc\\": "app/grpc/",
+            "Grpc\\": "grpc/",
+            "GPBMetadata\\": "GPBMetadata/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         }

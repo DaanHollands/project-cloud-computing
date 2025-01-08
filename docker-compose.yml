@@ -34,8 +34,6 @@ services:
     image: localhost/soapdotnet:latest
     ports:
       - "8001:5109"
-    # volumes:
-    #   - ./SoapDotnet:/app:Z # For Development
     networks:
       - app-network
     depends_on:
@@ -117,7 +115,6 @@ services:
         condition: service_healthy
         restart: true
 
-
   postgres:
       container_name: postgres
       build:
@@ -141,7 +138,6 @@ services:
         retries: 10
         start_period: 180s
         timeout: 10s
-
 
   adminer:
     container_name: adminer
