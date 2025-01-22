@@ -1,7 +1,11 @@
 FROM docker.io/php:8.3-fpm
 
+# Provides install-php-extensions
+ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
+
 # Install system dependencies and build tools
 RUN apt-get update && apt-get install -y \
+    build-essential \
     git \
     zip \
     unzip \
@@ -11,20 +15,20 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libssl-dev \
     zlib1g-dev \
+    libgrpc-dev \
     libtool \
     autoconf \
     automake \
     nodejs \
     npm \
     libpq-dev \
-    protobuf-compiler \
-    && docker-php-ext-install pgsql pdo_pgsql soap xml curl
+    protobuf-compiler
 
-# Install gRPC and PHP dependencies
-RUN apt-get install -y \
-    libgrpc-dev \
-    && pecl install grpc \
-    && docker-php-ext-enable grpc
+# Install PHP Extensions
+RUN docker-php-ext-install pgsql pdo_pgsql soap xml curl
+
+# Install gRPC from PECL, Takes two eternities
+RUN install-php-extensions grpc
 
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 

@@ -18,8 +18,8 @@
                             <p class="text-gray-600"><strong>{{ __('User ID:') }}</strong> {{ $invoice->getUserId() }}</p>
                             <p class="text-gray-600">
                                 <strong>{{ __('Status:') }}</strong> 
-                                <span class="{{ $invoice->ispaid ? 'text-green-500' : 'text-red-500' }}">
-                                    {{ $invoice->isPaid() ? __('Paid') : __('Unpaid') }}
+                                <span class="{{ $invoice->getIsPaid() ? 'text-green-500' : 'text-red-500' }}">
+                                    {{ $invoice->getIsPaid() ? __('Paid') : __('Unpaid') }}
                                 </span>
                             </p>
                         </div>

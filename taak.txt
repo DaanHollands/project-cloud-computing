@@ -1,5 +1,6 @@
 Opdracht van de taak:
 
+
 Website voor een ziekenhuis
     ==> inloggen
     	==> profiel met gegevens
@@ -24,12 +25,3 @@ Website voor een ziekenhuis
     ==> agenda delen met andere mensen
     ==> afsrpaken met andere mensen met dezelfde aandoeningen
     	==> afspreken aan de hand van zelfde soort operaties
-
-    
-    
-SOAP        OK
-GraphQL     OK
-REST
-MQTT        OK
-gRPC
-Externe service

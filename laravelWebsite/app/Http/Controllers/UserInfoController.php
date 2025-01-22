@@ -28,14 +28,29 @@ class UserInfoController extends Controller
             'phoneNumber' => 'nullable|string',
         ]);
 
-        $response = SoapService::createUser(
-            auth()->user()->email,
-            $validated['firstName'] . ' ' . $validated['lastName'],
-            $validated['birthDate'],
-            $validated['postalCode'],
-            $validated['street'],
-            $validated['houseNumber'],
-            $validated['country']);
+        $response = null;
+
+        if(SoapService::getUserByEmail(auth()->user()->email))
+        {
+            $response = SoapService::updateAddress(
+                auth()->user()->email,
+                $validated['street'],
+                $validated['houseNumber'],
+                $validated['postalCode'],
+                $validated['country']); 
+        } 
+        else 
+        {
+            $response = SoapService::createUser(
+                auth()->user()->email,
+                $validated['firstName'] . ' ' . $validated['lastName'],
+                $validated['birthDate'],
+                $validated['postalCode'],
+                $validated['street'],
+                $validated['houseNumber'],
+                $validated['country']);
+        }
+
         if($response){
             return redirect()->route('dashboard');
         } else {

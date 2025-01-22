@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import be.kuleuven.restaurantapi.model.Reservation;
 import be.kuleuven.restaurantapi.services.ReservationService;
@@ -25,7 +26,12 @@ public class ReservationController {
     }
 
     @PostMapping
-    public Reservation createReservation(Long tableId, Long userId, ZonedDateTime dateTime, Integer duration, Integer numberOfPersons) {
+    public Reservation createReservation(
+        @RequestParam Long tableId, 
+        @RequestParam Long userId, 
+        @RequestParam ZonedDateTime dateTime, 
+        @RequestParam Integer duration, 
+        @RequestParam Integer numberOfPersons) {
         return service.createReservation(tableId, userId, dateTime, duration, numberOfPersons);
     }
 

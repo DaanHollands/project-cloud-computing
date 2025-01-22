@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Client\Response;
+use Carbon\Carbon;
 use Exception;
 
 class ReservationService
@@ -20,16 +21,19 @@ class ReservationService
      */
     public function createReservation($tableId, $userId, $dateTime, $duration, $numberOfPersons)
     {
+        $offset = Carbon::now()->format('P');
+        $finalDateTime = $dateTime . $offset;
+
         try {
-            $response = Http::post($this->baseUrl, [
+
+            $response = Http::asForm()->post($this->baseUrl, [
                 'tableId' => $tableId,
                 'userId' => $userId,
-                'dateTime' => $dateTime,
+                'dateTime' => $finalDateTime,
                 'duration' => $duration,
                 'numberOfPersons' => $numberOfPersons,
             ]);
 
-            $this->handleApiResponse($response);
             return $response->json();
         } catch (Exception $e) {
             throw new Exception('Failed to create reservation: ' . $e->getMessage());

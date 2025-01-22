@@ -82,9 +82,9 @@
 
                         <!-- Submit Button -->
                         <div class="mt-6">
-                            <a href="{{ route('profile') }}" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+                            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
                                 {{ __('Save Changes') }}
-                            </a>
+                            </button>
                         </div>
                     </form>
                 </div>

@@ -28,7 +28,7 @@ Route::get('/profile', [UserInfoController::class, 'get'])
     ->name('profile');
 Route::post('/profile', [UserInfoController::class, 'store'])
     ->middleware(['auth'])
-    ->name('profile');
+    ->name('profile.store');
 
 
 //Agenda
@@ -72,9 +72,11 @@ Route::post('/restaurant/{id}/store', [RestaurantController::class, 'store'])
 Route::get('/meddata', [MedicalDataController::class, 'index'])
     ->middleware(['auth'])
     ->name('meddata.index');
+
 Route::get('/meddata/record/{id}', [MedicalDataController::class, 'show_record'])
     ->middleware(['auth'])
     ->name('meddata.record.show');
+    
 Route::get('/meddata/invoice/{id}', [MedicalDataController::class, 'show_invoice'])
     ->middleware(['auth'])
     ->name('meddata.invoice.show');   
