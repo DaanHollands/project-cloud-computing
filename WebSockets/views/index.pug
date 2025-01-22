@@ -1,0 +1,98 @@
+extends layout
+
+block content
+  h1 Messaging App
+  #chat-container
+    each message in messages
+      .message(style=`border-left: 5px solid ${message.userColor}; padding-left: 10px;`)
+        .message-content
+          span() #{message.content}
+  
+  form#chat-form(action="/" method="POST")
+    select#color-select(name="color")
+      option(disabled selected value="none") Choose a color 
+      each color in colors
+        option(value=color, id=color, style=`background-color: ${color}; color: white;`)= color
+    
+    #color-indicator(style="background-color: #ffffff; height: 20px; width: 20px; border-radius: 50%; margin-top: 10px;")
+    input#message-input(type="text" placeholder="Type a message" required)
+    button(type="submit") Send
+
+  script.
+    const ws = new WebSocket(`ws://${window.location.host}`)
+    const chatForm = document.getElementById('chat-form')
+    const messageInput = document.getElementById('message-input')
+    const chatContainer = document.getElementById('chat-container')
+    const colorSelect = document.getElementById('color-select')
+    const colorIndicator = document.getElementById('color-indicator')
+
+    // Color Related
+    colorIndicator.style.backgroundColor = colorSelect.value || '#ffffff'
+    colorSelect.addEventListener('change', (e) => {
+      const selectedColor = e.target.value
+      colorIndicator.style.backgroundColor = selectedColor
+
+      // Send the selected color to the server immediately
+      if (selectedColor !== "none") {
+        ws.send(JSON.stringify({
+          type: 'colorChange',
+          userColor: selectedColor
+        }))
+      }
+    })
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data)
+
+      if (data.type === 'colorUpdate') {
+        const currentColors = Array.from(colorSelect.options).map(option => option.value)
+
+        // Add new colors if they are not already in the dropdown
+        data.colors.forEach((color) => {
+          if (color !== "none" && !currentColors.includes(color)) {
+            const newOption = document.createElement('option')
+            newOption.value = color
+            newOption.id = color
+            newOption.style.backgroundColor = color
+            newOption.style.color = 'white'
+            newOption.innerHTML = color
+            colorSelect.appendChild(newOption)
+          }
+        })
+
+        // Remove colors that are already picked
+        Array.from(colorSelect.options).forEach((option) => {
+          if (data.colors.includes(option.value) && option.value !== "none" && option.value !== colorSelect.value) {
+            option.remove()
+          }
+        })
+      } else if (data.type === 'message') {
+        // Display received message
+        const { content, userColor } = data
+        const messageDiv = document.createElement('div')
+        messageDiv.classList.add('message')
+        messageDiv.style.borderLeft = `5px solid ${userColor}`
+        messageDiv.innerHTML = `
+          <div class="message-content">
+            <span>${content}</span>
+          </div>
+        `
+        chatContainer.appendChild(messageDiv)
+      }
+    }
+
+    // Send message with selected color
+    chatForm.addEventListener('submit', (e) => {
+      e.preventDefault()
+
+      if (colorSelect.value === "none") {
+        alert('Please select a color')
+        return
+      }
+
+      ws.send(JSON.stringify({
+        content: messageInput.value,
+        userColor: colorSelect.value
+      }))
+      messageInput.value = '' // Clear the input field
+    })
